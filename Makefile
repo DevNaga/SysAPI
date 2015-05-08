@@ -1,5 +1,19 @@
+SHELL = /bin/sh
+CC    = gcc
+CFLAGS       = -fPIC -g
+LDFLAGS = -shared
 
-all:
-	gcc -Wall -shared -fPIC sysapi_net.c -o libsysapi.so
+TARGET  = libsysapi.so
+SOURCES = $(shell echo *.c)
+HEADERS = $(shell echo *.h)
+OBJECTS = $(SOURCES:.c=.o)
+
+PREFIX = $(DESTDIR)/usr/local
+BINDIR = $(PREFIX)/bin
+
+all: $(TARGET)
+
+$(TARGET): $(OBJECTS)
+	    $(CC) $(CFLAGS) $(LDFLAGS) $(DEBUGFLAGS) -o $(TARGET) $(OBJECTS)
 clean:
-	rm -rf *.o *.so
+	rm -rf *.o ${TARGET}
