@@ -15,7 +15,9 @@ int sapi_unix_tcp_server_create(char *path, int n_conns)
     struct sockaddr_un serv = {
         .sun_family = AF_UNIX,
         .sun_path = strlen(path) + 1,
+#ifdef CONFIG_OS_BSD
         .sun_len = SUN_LEN(&serv),
+#endif
     };
 
     int sock;
@@ -38,6 +40,11 @@ err_listen:
 err_bind:
     close(sock);
     return -1;
+}
+
+void sapi_unix_tcp_server_destroy(int sock)
+{
+    close(sock);
 }
 
 // AF_INET for now
@@ -73,3 +80,7 @@ err_bind:
     return -1;
 }
 
+void sapi_inet_tcp_server_destroy(int sock)
+{
+    close(sock);
+}

@@ -1,6 +1,6 @@
 SHELL = /bin/sh
 CC    = gcc
-CFLAGS       = -fPIC -g
+CFLAGS       = -Wall -fPIC -g
 LDFLAGS = -shared
 
 TARGET  = libsysapi.so

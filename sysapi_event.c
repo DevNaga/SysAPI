@@ -83,7 +83,7 @@ void *sapi_read_evthreader(void *priv)
     for (;;) {
         // sleep until we woken up by select
         pthread_mutex_lock(&thr_ctx->cond_mutex);
-        pthread_cond_wait(&thr_ctx->read_cond, 0);
+        pthread_cond_wait(&thr_ctx->read_cond, &thr_ctx->cond_mutex);
         // since this runs in thread ... select can run and execute in parallel
         thr_ctx->sapi_read_event_cb(&thr_ctx->app_cb);
         pthread_mutex_unlock(&thr_ctx->cond_mutex);
@@ -122,6 +122,12 @@ int sapi_reg_read_event(int sock, void *libctx, void *appctx,
 err_create_thread:
     free(new_tctx);
     return -1;
+}
+
+void sapi_unreg_read_event(void *libctx, int sock)
+{
+    struct sapi_event_data *sapi_evdata = libctx;
+    struct sapi_read_evlist *list;
 }
 
 void sapi_event_loop(void *libctx)
