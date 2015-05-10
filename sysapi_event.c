@@ -39,7 +39,7 @@ void *sapi_event_system_init(void)
         return NULL;
 
     FD_ZERO(&evt->allfd);
-    evt->maxfd = 0;
+    evt->maxfd = -1;
 
     return evt;
 }
@@ -85,7 +85,7 @@ void *sapi_read_evthreader(void *priv)
         pthread_mutex_lock(&thr_ctx->cond_mutex);
         pthread_cond_wait(&thr_ctx->read_cond, &thr_ctx->cond_mutex);
         // since this runs in thread ... select can run and execute in parallel
-        thr_ctx->sapi_read_event_cb(&thr_ctx->app_cb);
+        thr_ctx->sapi_read_event_cb(thr_ctx->app_cb);
         pthread_mutex_unlock(&thr_ctx->cond_mutex);
     };
 }
@@ -100,7 +100,7 @@ int sapi_reg_read_event(int sock, void *libctx, void *appctx,
     FD_SET(sock, &sapi_evdata->allfd);
 
     if (sock > sapi_evdata->maxfd)
-        sapi_evdata->maxfd = sock;
+        sapi_evdata->maxfd = sock + 1;
 
     new_tctx = calloc(1, sizeof(*new_tctx));
     if (!new_tctx)
@@ -116,6 +116,8 @@ int sapi_reg_read_event(int sock, void *libctx, void *appctx,
 
     if (pthread_create(&t, NULL, sapi_read_evthreader, new_tctx) < 0)
         goto err_create_thread;
+
+    sapi_read_evlist_add(sapi_evdata, t, new_tctx);
 
     return 0;
 
@@ -154,3 +156,4 @@ void sapi_event_loop(void *libctx)
         }
     }
 }
+
