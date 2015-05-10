@@ -7,6 +7,62 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <sys/ioctl.h>
+#include <net/if.h>
+
+struct sapi_lib_context {
+    int drv_fd;
+};
+
+void *sapi_lib_context_create(void)
+{
+    struct sapi_lib_context *libctx;
+
+    libctx = calloc(1, sizeof(struct sapi_lib_context));
+    if (!libctx)
+        return NULL;
+
+    libctx->drv_fd = -1;
+
+    return libctx;
+}
+
+void sapi_lib_context_destroy(void *ctx)
+{
+    struct sapi_lib_context *libctx = ctx;
+
+    if (libctx->drv_fd > 0)
+        close(libctx->drv_fd);
+
+    free(libctx);
+}
+
+int sapi_get_ifaddr(void *ctx, char *ifname, char *ifaddr)
+{
+    struct ifreq ifr;
+    struct sapi_lib_context *libctx = ctx;
+    int ret = -1;
+    char *addr;
+
+    memset(&ifr, 0, sizeof(ifr));
+
+    if (libctx->drv_fd < 0) {
+        libctx->drv_fd = socket(AF_INET, SOCK_DGRAM, 0);
+        if (libctx->drv_fd < 0)
+            return ret;
+    }
+
+    ifr.ifr_addr.sa_family = AF_INET;
+    strncpy(ifr.ifr_name, ifname, strlen(ifname) + 1);
+
+    ret = ioctl(libctx->drv_fd,  SIOCGIFADDR, &ifr);
+    if (ret < 0)
+        return ret;
+
+    strcpy(ifaddr, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
+
+    return (ret >= 0) ? 0: -1;
+}
 
 int sapi_unix_tcp_server_create(char *path, int n_conns)
 {
