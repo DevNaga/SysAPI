@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <signal.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -126,10 +128,43 @@ err_create_thread:
     return -1;
 }
 
+void sapi_deinit_thread(pthread_t t, struct sapi_read_evthread *thr_data)
+{
+    pthread_kill(t, SIGINT);
+}
+
 void sapi_unreg_read_event(void *libctx, int sock)
 {
     struct sapi_event_data *sapi_evdata = libctx;
-    struct sapi_read_evlist *list;
+    struct sapi_read_evlist *list = sapi_evdata->head;
+    struct sapi_read_evlist *old;
+    struct sapi_read_evthread *thr_data;
+
+    thr_data = list->thread_data;
+    if (thr_data->sock == sock) {
+        sapi_deinit_thread(list->t, list->thread_data);
+        free(thr_data);
+        sapi_evdata->head = list->next;
+        if (sapi_evdata->tail == list)
+            sapi_evdata->tail = sapi_evdata->head;
+        free(list);
+        return;
+    }
+
+    old = list;
+
+    while (list) {
+        if (list->thread_data->sock == sock) {
+            old->next = list->next;
+            sapi_deinit_thread(list->t, list->thread_data);
+            free(list->thread_data);
+            free(list);
+            return;
+        } else {
+            old = list;
+            list = list->next;
+        }
+    }
 }
 
 void sapi_event_loop(void *libctx)
