@@ -98,7 +98,38 @@ err_bind:
     return -1;
 }
 
+int sapi_unix_tcp_client_create(char *path)
+{
+    int ret;
+
+    struct sockaddr_un serv = {
+        .sun_family = AF_UNIX,
+        .sun_path = strlen(path) + 1
+    };
+
+    int sock;
+
+    sock = socket(AF_UNIX, SOCK_STREAM, 0);
+    if (sock < 0)
+        return -1;
+
+    ret = connect(sock, (struct sockaddr *)&serv, sizeof(serv));
+    if (ret < 0)
+        goto err_connect;
+
+    return sock;
+
+err_connect:
+    close(sock);
+    return -1;
+}
+
 void sapi_unix_tcp_server_destroy(int sock)
+{
+    close(sock);
+}
+
+void sapi_unix_tcp_client_destroy(int sock)
 {
     close(sock);
 }
@@ -136,7 +167,39 @@ err_bind:
     return -1;
 }
 
+int sapi_inet_tcp_client_create(char *ip, int port)
+{
+    int ret;
+
+    struct sockaddr_in serv = {
+        .sin_family = AF_INET,
+        .sin_addr.s_addr = inet_addr(ip),
+        .sin_port = htons(port)
+    };
+
+    int sock;
+
+    sock = socket(AF_INET, SOCK_STREAM, 0);
+    if (sock < 0)
+        return -1;
+
+    ret = connect(sock, (struct sockaddr *)&serv, sizeof(serv));
+    if (ret < 0)
+        goto err_connect;
+
+    return sock;
+
+err_connect:
+    close(sock);
+    return -1;
+}
+
 void sapi_inet_tcp_server_destroy(int sock)
+{
+    close(sock);
+}
+
+void sapi_inet_tcp_client_destroy(int sock)
 {
     close(sock);
 }
