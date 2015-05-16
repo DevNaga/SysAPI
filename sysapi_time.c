@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <time.h>
 #include <sys/time.h>
+#include "sysapi_time.h"
 
 long sapi_get_time_sec()
 {
@@ -32,10 +33,11 @@ int sapi_is_dst_active()
 // the first argument here is for thread safety
 int sapi_get_cur_caltime(struct sapi_time *sapi_time)
 {
-    int ret = -1
+    int ret;
     time_t now;
     struct tm *t;
 
+    ret = -1;
     now = time(0);
     t = localtime(&now);
     if (t) {
