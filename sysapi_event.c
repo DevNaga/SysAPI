@@ -211,12 +211,14 @@ int sapi_add_s_elem(int sigmask, struct sapi_event_data *sapi_evdata, void *app_
         return ret;
 
 //    n->signal
+
+    return 0;
 }
 
 void sapi_register_term_signal(void *libctx, void *app_cb, void (*signal_evcb)(void *))
 {
-    int ret;
-    struct sapi_event_data *sapi_evdata = libctx;
+//    int ret;
+//    struct sapi_event_data *sapi_evdata = libctx;
 
 }
 

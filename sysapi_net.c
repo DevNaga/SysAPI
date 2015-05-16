@@ -42,7 +42,6 @@ int sapi_get_ifaddr(void *ctx, char *ifname, char *ifaddr)
     struct ifreq ifr;
     struct sapi_lib_context *libctx = ctx;
     int ret = -1;
-    char *addr;
 
     memset(&ifr, 0, sizeof(ifr));
 
@@ -70,11 +69,12 @@ int sapi_unix_tcp_server_create(char *path, int n_conns)
 
     struct sockaddr_un serv = {
         .sun_family = AF_UNIX,
-        .sun_path = strlen(path) + 1,
 #ifdef CONFIG_OS_BSD
         .sun_len = SUN_LEN(&serv),
 #endif
     };
+
+    strcpy(serv.sun_path, path);
 
     int sock;
 
@@ -104,8 +104,9 @@ int sapi_unix_tcp_client_create(char *path)
 
     struct sockaddr_un serv = {
         .sun_family = AF_UNIX,
-        .sun_path = strlen(path) + 1
     };
+
+    strcpy(serv.sun_path, path);
 
     int sock;
 
