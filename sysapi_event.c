@@ -25,11 +25,20 @@ struct sapi_read_evlist {
     struct sapi_read_evlist *next;
 };
 
+struct sapi_signal_evlist {
+    int signal_no;
+    void *app_cb;
+    void (*sapi_signal_evcallback)(void *app_cb);
+    struct sapi_signal_evlist *next;
+};
+
 struct sapi_event_data {
     fd_set allfd;
     int maxfd;
     struct sapi_read_evlist *head;
     struct sapi_read_evlist *tail;
+    struct sapi_signal_evlist *s_head;
+    struct sapi_signal_evlist *s_tail;
 };
 
 void *sapi_event_system_init(void)
@@ -190,5 +199,24 @@ void sapi_event_loop(void *libctx)
             }
         }
     }
+}
+
+int sapi_add_s_elem(int sigmask, struct sapi_event_data *sapi_evdata, void *app_cb, void (*signal_evcb)(void *))
+{
+    int ret = -1;
+    struct sapi_signal_evlist *n;
+
+    n = calloc(1, sizeof(struct sapi_signal_evlist));
+    if (!n)
+        return ret;
+
+    n->signal
+}
+
+void sapi_register_term_signal(void *libctx, void *app_cb, void (*signal_evcb)(void *))
+{
+    int ret;
+    struct sapi_event_data *sapi_evdata = libctx;
+
 }
 
