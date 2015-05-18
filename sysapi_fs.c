@@ -15,15 +15,23 @@ int sysapi_dir_read(char *dirpath,
     strncpy(path, dirpath, strlen(dirpath) + 1);
     while ((entry = readdir(dirp)) != NULL) {
         sysapi_file_type type;
-        if (entry->d_type == DT_REG)
+
+        memset(path, 0, sizeof(path));
+        strncat(path, entry->d_name, strlen(entry->d_name));
+
+        struct stat sf;
+
+        stat(path, &sf);
+
+        if (sf.st_mode & S_IFREG)
             type = SYSAPI_FILE_TYPE_REGFILE;
-        if (entry->d_type == DT_DIR)
+
+        if (sf.st_mode & S_IFDIR)
             type = SYSAPI_FILE_TYPE_DIRECT;
+
         if (type == SYSAPI_FILE_TYPE_REGFILE ||
-            type == SYSAPI_FILE_TYPE_DIRECT) {
-            strncat(path, entry->d_name, strlen(entry->d_name));
+            type == SYSAPI_FILE_TYPE_DIRECT)
             callback(path, type, app_ctx);
-        }
     }
 
     closedir(dirp);
@@ -43,6 +51,7 @@ int sysapi_read_binfile(char *filename,
     while (1) {
         char filedata[300];
 
+        memset(filedata, 0, sizeof(filedata));
         int ret = read(fd, filedata, sizeof(filedata));
         if (ret > 0)
             callback(filedata, ret, app_ctx);
