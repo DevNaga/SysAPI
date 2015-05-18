@@ -34,15 +34,22 @@ For example the following:
 //
 // each of the block has a start pointer, length and lock that protects
 // it from illegal writes.
+
+
 struct _token_data {
+
     int token_number;
+
 };
 
+
 struct sapi_socket_event {
+
     void *block_start;
     uint32 block_len;
     struct _token_data tokens;
     int total_blocks;
+
 };
 
 // the producer list is hold by the producer and will be
@@ -52,10 +59,13 @@ struct sapi_socket_event {
 // upon reception of a socket event from the consumer the
 // producer decrements the sent_token_count and it does a
 // search in the sent_tokens list and destroys it .
+
 struct token_producer_list {
+
     int sent_tokens[MAX_TOKENS];
     int sent_token_count;
     int free_tokens[MAX_TOKENS]; // MAX_TOKENS - sent_tokens gives us free tokens
+
 };
 
 // the consumer list is hold by the consumer and will be
@@ -67,10 +77,14 @@ struct token_producer_list {
 // recv_tokens_count. This table is only useful when the receiver
 // has a thread that performs the reception and the data processing
 // is handled in the other threads.
+
+
 struct token_consumer_list {
+
     int recv_tokens[MAX_TOKENS];
     int recv_tokens_count;
     int free_tokens[MAX_TOKENS]; // MAX_TOKENS - recv_tokens gives us free tokens
+
 };
 
 This system provides a faster, same speed as the socket (10 usec on a modern-ish computer) with an event data to and fro from the
