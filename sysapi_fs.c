@@ -63,6 +63,18 @@ int sysapi_read_binfile(char *filename,
     return 0;
 }
 
+int sysapi_get_filesize(char *filename)
+{
+    struct stat st;
+    int ret;
+
+    ret = stat(filename, &st);
+    if (ret < 0)
+        return ret;
+
+    return st.st_size;
+}
+
 // mini lsof command implementer API..
 int sysapi_get_files_inuse(char *progname,
                            void (*callback)(char *filename, void *app_ctx),
