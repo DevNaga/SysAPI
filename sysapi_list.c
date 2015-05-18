@@ -6,10 +6,6 @@
 struct sapi_list {
     void *data;
     struct sapi_list *next;
-    int (*iter_func)(void *data, void *lib_ctx);
-    int (*delete_func)(void *data, void *lib_ctx);
-    int (*free_func)(void *data, void *lib_ctx);
-    int (*sort_func)(void *data, void *lib_ctx);
 };
 
 struct sapi_list_ctx {
