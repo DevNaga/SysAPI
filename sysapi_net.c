@@ -195,6 +195,36 @@ err_connect:
     return -1;
 }
 
+int _sapi_inet_tcp_transmit(int sock, void *data, int datalen)
+{
+    return send(sock, (void *)data, datalen, 0);
+}
+
+int sapi_unix_tcp_transmit(int sock, void *data, int datalen)
+{
+    return _sapi_inet_tcp_transmit(sock, data, datalen);
+}
+
+int sapi_inet_tcp_transmit(int sock, void *data, int datalen)
+{
+    return _sapi_inet_tcp_transmit(sock, data, datalen);
+}
+
+int _sapi_inet_tcp_receive(int sock, void *data, int datalen)
+{
+    return recv(sock, (void *)data, datalen, 0);
+}
+
+int sapi_unix_tcp_receive(int sock, void *data, int datalen)
+{
+    return _sapi_inet_tcp_receive(sock, data, datalen);
+}
+
+int sapi_inet_tcp_receive(int sock, void *data, int datalen)
+{
+    return _sapi_inet_tcp_receive(sock, data, datalen);
+}
+
 void sapi_inet_tcp_server_destroy(int sock)
 {
     close(sock);
@@ -204,3 +234,4 @@ void sapi_inet_tcp_client_destroy(int sock)
 {
     close(sock);
 }
+
