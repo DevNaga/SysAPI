@@ -8,6 +8,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #include <fcntl.h>
 #include <dirent.h>
 
@@ -19,6 +20,9 @@ typedef enum {
 int sysapi_read_dir(char *dirpath,
 	                void (*callback)(char *filename, sysapi_file_type type, void *app_cb),
 					void *app_cb);
+int sysapi_read_binfile(char *filename,
+		                void (*callback)(char *filedata, int len, void *app_ctx),
+						void *app_ctx);
 
 #endif
 

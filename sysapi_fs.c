@@ -30,3 +30,37 @@ int sysapi_dir_read(char *dirpath,
     return 0;
 }
 
+int sysapi_read_binfile(char *filename,
+                     void (*callback)(char *data, int len, void *app_ctx),
+                     void *app_ctx)
+{
+    int fd;
+
+    fd = open(filename, O_RDONLY);
+    if (fd < 0)
+        return -1;
+
+    while (1) {
+        char filedata[300];
+
+        int ret = read(fd, filedata, sizeof(filedata));
+        if (ret > 0)
+            callback(filedata, ret, app_ctx);
+        else
+            break;
+    }
+
+    close(fd);
+    return 0;
+}
+
+// mini lsof command implementer API..
+int sysapi_get_files_inuse(char *progname,
+                           void (*callback)(char *filename, void *app_ctx),
+                           void *app_ctx)
+{
+    DIR *dirp;
+    struct dirent *entry;
+    char path[300];
+}
+
