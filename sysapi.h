@@ -14,6 +14,7 @@
 #include "sysapi_net.h"
 #include "sysapi_event.h"
 #include "sysapi_time.h"
+#include "sysapi_fs.h"
 
 #endif
 
