@@ -1,3 +1,4 @@
 cd mbedtls_libs && make clean && make
 cd ..
 make clean && make
+ln -s mbedtls_libs/libmbedtls.a libmbedtls.a
