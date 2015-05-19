@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <dirent.h>
+#include <sys/shm.h>
 
 typedef enum {
 	SYSAPI_FILE_TYPE_REGFILE,
