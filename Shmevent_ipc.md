@@ -1,8 +1,8 @@
-This is the specification of a eventbased shared memory protocol that can be used as an IPC.
+This is the specification of a event based shared memory protocol that can be used as an IPC mechanism between two processes with in the system (in system IPC).
 
 Description:
 
-This specification provides one of the way of using the shared memory with sockets as locks and events between one or more processes
+This specification provides one of the methods of using the shared memory with sockets as locks and events between one or more processes
 with in the same system.
 
 The disadvantage of the shared memory system is that it does not provide an event based notification when a process writes to it or
@@ -21,9 +21,9 @@ socket and it can do its job without worrying about waiting on that socket forev
 the process).
 
 The large amount of data transfer via socket is considered as an overhead because of the memcpy in the kernel side. But the performance
-remains the same with small amounts of data.
+remains almost same with small amounts of data.
 
-The sockets here are used as event activators holding some kind of header information.
+The sockets here are used as event activators holding some kind of header information. The header information is defined in the example below.
 
 For example the following:
 
@@ -80,4 +80,6 @@ struct token_consumer_list {
 ```
 
 This system provides a faster, same speed as the socket (10 usec on a modern-ish computer) with an event data to and fro from the
-producer and consumer. Thus providing a larger data transfer with minimal over head between the links.
+producer and consumer. Thus providing a larger data transfer with minimal over head between the communication channels.
+
+This system works for a one producer and multiple consumer model, if the producer and consumer logic implements a multicast based socket communication protocol.
