@@ -27,6 +27,7 @@ The sockets here are used as event activators holding some kind of header inform
 
 For example the following:
 
+
 // tokens are used as the memory block locks
 // the whole shared memory that is allocated for both of the producer
 // and consumer is divided into a set of blocks of 1024 bytes in size or
@@ -35,21 +36,16 @@ For example the following:
 // each of the block has a start pointer, length and lock that protects
 // it from illegal writes.
 
-
+```
 struct _token_data {
-
     int token_number;
-
 };
 
-
 struct sapi_socket_event {
-
     void *block_start;
     uint32 block_len;
     struct _token_data tokens;
     int total_blocks;
-
 };
 
 // the producer list is hold by the producer and will be
@@ -61,11 +57,9 @@ struct sapi_socket_event {
 // search in the sent_tokens list and destroys it .
 
 struct token_producer_list {
-
     int sent_tokens[MAX_TOKENS];
     int sent_token_count;
     int free_tokens[MAX_TOKENS]; // MAX_TOKENS - sent_tokens gives us free tokens
-
 };
 
 // the consumer list is hold by the consumer and will be
@@ -80,12 +74,11 @@ struct token_producer_list {
 
 
 struct token_consumer_list {
-
     int recv_tokens[MAX_TOKENS];
     int recv_tokens_count;
     int free_tokens[MAX_TOKENS]; // MAX_TOKENS - recv_tokens gives us free tokens
-
 };
+```
 
 This system provides a faster, same speed as the socket (10 usec on a modern-ish computer) with an event data to and fro from the
 producer and consumer. Thus providing a larger data transfer with minimal over head between the links.
