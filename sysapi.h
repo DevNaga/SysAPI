@@ -11,6 +11,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include "sysapi_hashtbl.h"
 #include "sysapi_net.h"
 #include "sysapi_event.h"
 #include "sysapi_time.h"
