@@ -27,7 +27,7 @@ The sockets here are used as event activators holding some kind of header inform
 
 For example the following:
 
-
+```
 // tokens are used as the memory block locks
 // the whole shared memory that is allocated for both of the producer
 // and consumer is divided into a set of blocks of 1024 bytes in size or
@@ -36,7 +36,6 @@ For example the following:
 // each of the block has a start pointer, length and lock that protects
 // it from illegal writes.
 
-```
 struct _token_data {
     int token_number;
 };
