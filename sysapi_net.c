@@ -235,3 +235,34 @@ void sapi_inet_tcp_client_destroy(int sock)
     close(sock);
 }
 
+int sapi_inet_udp_server_create(char *ip_addr, int port)
+{
+    int sock;
+    int ret;
+
+    struct sockaddr_in serv;
+
+    serv.sin_family = AF_INET;
+    serv.sin_addr.s_addr = inet_addr(ip_addr);
+    serv.sin_port = htons(port);
+
+    sock = socket(AF_INET, SOCK_DGRAM, 0);
+    if (sock < 0)
+        return -1;
+
+    ret = bind(sock, (struct sockaddr *)&serv, sizeof(serv));
+    if (ret < 0)
+        goto err_sock;
+
+    return sock;
+
+err_sock:
+    close(sock);
+    return -1;
+}
+
+void sapi_inet_udp_server_destroy(int sock)
+{
+    close(sock);
+}
+
