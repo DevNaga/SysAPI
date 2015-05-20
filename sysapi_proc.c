@@ -193,7 +193,7 @@ int sysapi_get_kernel_meminfo(struct sysapi_kernel_meminfo *meminfo)
     return 0;
 }
 
-#ifndef CONFIG_SYSAPI_PROC_TEST
+#ifdef CONFIG_SYSAPI_PROC_TEST
 int main(void)
 {
     char cmdline[200];
