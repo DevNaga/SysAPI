@@ -179,10 +179,8 @@ int sysapi_get_kernel_meminfo(struct sysapi_kernel_meminfo *meminfo)
 
         for (list = 0; list < size; list++) {
             if (strcmp(_meminfo[list].name, src) == 0) {
-                printf("offset %d\n", _meminfo[list].off);
                 int *value = (long)((long)(meminfo) + _meminfo[list].off);
 
-                printf("dst '%s'\n", dst);
                 *value = atoi(dst);
             }
         }
