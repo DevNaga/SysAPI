@@ -2,4 +2,4 @@ language: c
 compiler: gcc
 before install:
   - sudo pip install cpp-coveralls
-script: ./buildScript
+script: make clean && make
