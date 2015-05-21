@@ -16,7 +16,7 @@ void *sapi_memact_init(int memory_limit)
 
     memact->memory_limit = memory_limit;
 
-    return core;
+    return memact;
 }
 
 void *sapi_memact_alloc(void *cb, int size)
