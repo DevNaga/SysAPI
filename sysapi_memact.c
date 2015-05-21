@@ -12,7 +12,7 @@ void *sapi_memact_init(int memory_limit)
 
     memact = calloc(1, sizeof(struct sysapi_memact_data));
     if (!memact)
-        return core;
+        return memact;
 
     memact->memory_limit = memory_limit;
 
@@ -35,7 +35,7 @@ void sapi_memact_expand(void *cb, int exp_len)
 {
     struct sysapi_memact_data *memact = cb;
 
-    cb->memory_limit += exp_len;
+    memact->memory_limit += exp_len;
 }
 
 void sapi_memact_deinit(void *cb)
