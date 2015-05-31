@@ -67,7 +67,6 @@ int sysapi_get_kernel_meminfo(struct sysapi_kernel_meminfo *meminfo)
 #define SYSAPI_DIRECT_MAP4K "DirectMap4k"
 #define SYSAPI_DIRECT_MAP2M "DirectMap2M"
 
-    int ret;
     struct _meminfo_meta {
         char *name;
         int off;
@@ -129,13 +128,10 @@ int sysapi_get_kernel_meminfo(struct sysapi_kernel_meminfo *meminfo)
         return -1;
 
     char buff[2000];
-    int n;
 
     memset(buff, 0, sizeof(buff));
 
-    n = sizeof(buff);
     while (fgets(buff, sizeof(buff), fp)) {
-        int len;
         int j;
         int list;
 
