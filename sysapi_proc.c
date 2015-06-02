@@ -187,6 +187,139 @@ int sysapi_get_kernel_meminfo(struct sysapi_kernel_meminfo *meminfo)
     return 0;
 }
 
+void _sysapi_parse_crypto_data(char *filebuf, char *dest)
+{
+    int i = 0, j = 0;
+
+    while (filebuf[i] != ':')
+        i++;
+
+    i++;
+
+    while (filebuf[i] != '\0' ||
+           filebuf[i] != ' ') {
+        dest[j] = filebuf[i];
+        j++;
+        i++;
+    }
+
+    dest[j] = '\0';
+}
+
+
+int sysapi_get_kernel_crypto(struct sysapi_sys_crypto_info *crypto)
+{
+#define CRYPTO_NAME "name"
+#define CRYPTO_DRIVER "driver"
+#define CRYPTO_MODULE "module"
+#define CRYPTO_PRIORITY "priority"
+#define CRYPTO_REFCNT "refcnt"
+#define CRYPTO_SELFTEST "selftest"
+#define CRYPTO_TYPE "type"
+#define CRYPTO_SEEDSIZE "seedsize"
+#define CRYPTO_BLOCKSIZE "blocksize"
+#define CRYPTO_DIGESTSIZE "digestsize"
+#define CRYPRO_MINKEYSIZE "min keysize"
+#define CRYPTO_MAXKEYSIZE "max keysize"
+#define PROC_CRYPT "/proc/crypto"
+    int ret;
+    FILE *fp;
+    char filedata[1024];
+    int t = 0;
+
+    fp = fopen(PROC_CRYPT, "r");
+    if (!fp)
+        return -1;
+
+    memset(crypto, 0, sizeof(struct sysapi_sys_crypto_info));
+
+    while (fgets(filedata, sizeof(filedata), fp)) {
+        int i = 0, j = 0;
+        struct sysapi_sys_crypto_info *new;
+
+        if (!t) {
+            t = 1;
+            new = crypto;
+        } else {
+            new = calloc(1, sizeof(struct sysapi_sys_crypto_info));
+            if (!new)
+                return -1;
+
+            struct sysapi_sys_crypto_info *t = crypto;
+
+            while (t->next)
+                t = t->next;
+
+            t->next = new;
+        }
+
+        if (strstr(filedata, CRYPTO_NAME)) {
+            char data[20];
+            _sysapi_parse_crypto_data(filedata, data);
+            strcpy(new->name, data);
+            new->avail.name = 1;
+        } else if (strstr(filedata, CRYPTO_DRIVER)) {
+            char data[20];
+            _sysapi_parse_crypto_data(filedata, data);
+            strcpy(new->driver, data);
+            new->avail.driver = 1;
+        } else if (strstr(filedata, CRYPTO_MODULE)) {
+            char data[20];
+            _sysapi_parse_crypto_data(filedata, data);
+            strcpy(new->module, data);
+            new->avail.module = 1;
+        } else if (strstr(filedata, CRYPTO_PRIORITY)) {
+            char data[20];
+            _sysapi_parse_crypto_data(filedata, data);
+            new->priority = atoi(data);
+            new->avail.priority = 1;
+        } else if (strstr(filedata, CRYPTO_REFCNT)) {
+            char data[20];
+            _sysapi_parse_crypto_data(filedata, data);
+            new->refcnt = atoi(data);
+            new->avail.refcnt = 1;
+        } else if (strstr(filedata, CRYPTO_SELFTEST)) {
+            char data[20];
+            _sysapi_parse_crypto_data(filedata, data);
+            strcpy(new->selftest, data);
+            new->avail.selftest = 1;
+        } else if (strstr(filedata, CRYPTO_TYPE)) {
+            char data[20];
+            _sysapi_parse_crypto_data(filedata, data);
+            strcpy(new->type, data);
+            new->avail.type = 1;
+        } else if (strstr(filedata, CRYPTO_SEEDSIZE)) {
+            char data[20];
+            _sysapi_parse_crypto_data(filedata, data);
+            new->seedsize = atoi(data);
+            new->avail.seedsize = 1;
+        } else if (strstr(filedata, CRYPTO_BLOCKSIZE)) {
+            char data[20];
+            _sysapi_parse_crypto_data(filedata, data);
+            new->blocksize = atoi(data);
+            new->avail.blocksize = 1;
+        } else if (strstr(filedata, CRYPTO_DIGESTSIZE)) {
+            char data[20];
+            _sysapi_parse_crypto_data(filedata, data);
+            new->digestsize = atoi(data);
+            new->avail.digestsize = 1;
+        } else if (strstr(filedata, CRYPRO_MINKEYSIZE)) {
+            char data[20];
+            _sysapi_parse_crypto_data(filedata, data);
+            new->min_keysize = atoi(data);
+            new->avail.min_keysize = 1;
+        } else if (strstr(filedata, CRYPTO_MAXKEYSIZE)) {
+            char data[20];
+            _sysapi_parse_crypto_data(filedata, data);
+            new->max_keysize = atoi(data);
+            new->avail.max_keysize = 1;
+        }
+    }
+
+    return 0;
+}
+
+
 #ifdef CONFIG_SYSAPI_PROC_TEST
 int main(void)
 {

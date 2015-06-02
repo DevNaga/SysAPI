@@ -59,5 +59,39 @@ struct sysapi_kernel_meminfo {
 	int directmap2m;
 };
 
+struct sysapi_crypto_avail {
+	int name:1;
+	int driver:1;
+	int module:1;
+	int priority:1;
+	int refcnt:1;
+	int selftest:1;
+	int type:1;
+	int seedsize:1;
+	int blocksize:1;
+	int digestsize:1;
+	int min_keysize:1;
+	int max_keysize:1;
+} __attribute__((__packed__));
+
+#define SYSAPI_CRYPTO_BUFLEN 20
+
+struct sysapi_sys_crypto_info {
+	char name[SYSAPI_CRYPTO_BUFLEN];
+	char driver[SYSAPI_CRYPTO_BUFLEN];
+	char module[SYSAPI_CRYPTO_BUFLEN];
+	int priority;
+	int refcnt;
+	char selftest[SYSAPI_CRYPTO_BUFLEN];
+	char type[SYSAPI_CRYPTO_BUFLEN];
+	int seedsize;
+	int blocksize;
+	int digestsize;
+	int min_keysize;
+	int max_keysize;
+	struct sysapi_crypto_avail avail;
+	struct sysapi_sys_crypto_info *next;
+};
+
 #endif
 
