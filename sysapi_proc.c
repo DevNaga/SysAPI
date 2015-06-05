@@ -196,8 +196,10 @@ void _sysapi_parse_crypto_data(char *filebuf, char *dest)
 
     i++;
 
-    while (filebuf[i] != '\0' ||
-           filebuf[i] != ' ') {
+    while (filebuf[i] == ' ')
+        i++;
+
+    while (filebuf[i]) {
         dest[j] = filebuf[i];
         j++;
         i++;
@@ -206,8 +208,7 @@ void _sysapi_parse_crypto_data(char *filebuf, char *dest)
     dest[j] = '\0';
 }
 
-
-int sysapi_get_kernel_crypto(struct sysapi_sys_crypto_info *crypto)
+BROKEN int sysapi_get_kernel_crypto(struct sysapi_sys_crypto_info *crypto)
 {
 #define CRYPTO_NAME "name"
 #define CRYPTO_DRIVER "driver"
@@ -233,31 +234,43 @@ int sysapi_get_kernel_crypto(struct sysapi_sys_crypto_info *crypto)
 
     memset(crypto, 0, sizeof(struct sysapi_sys_crypto_info));
 
+    int old = 1, changed = 0;
+
+    struct sysapi_sys_crypto_info info;
+
     while (fgets(filedata, sizeof(filedata), fp)) {
         int i = 0, j = 0;
-        struct sysapi_sys_crypto_info *new;
+        struct sysapi_sys_crypto_info *new = &info;
+            
+        if (changed != old) {
+            if (changed == 2) {
+                crypto = new;
+                crypto->next = NULL;
+            } else {
+                struct sysapi_sys_crypto_info *t = crypto;
+                struct sysapi_sys_crypto_info *_t;
 
-        if (!t) {
-            t = 1;
-            new = crypto;
-        } else {
-            new = calloc(1, sizeof(struct sysapi_sys_crypto_info));
-            if (!new)
-                return -1;
+                while (t->next) {
+                    t = t->next;
+                }
 
-            struct sysapi_sys_crypto_info *t = crypto;
-
-            while (t->next)
-                t = t->next;
-
-            t->next = new;
+                _t = calloc(1, sizeof(struct sysapi_sys_crypto_info));
+                if (!_t)
+                    return -1;
+                _t = new;
+                _t->next = NULL;
+                t->next = _t;
+            }
+            old = changed;
         }
 
+        printf("Filedata %s\n", filedata);
         if (strstr(filedata, CRYPTO_NAME)) {
             char data[20];
             _sysapi_parse_crypto_data(filedata, data);
             strcpy(new->name, data);
             new->avail.name = 1;
+            changed++;
         } else if (strstr(filedata, CRYPTO_DRIVER)) {
             char data[20];
             _sysapi_parse_crypto_data(filedata, data);
@@ -325,12 +338,48 @@ int main(void)
 {
     char cmdline[200];
     struct sysapi_kernel_meminfo meminfo;
+    struct sysapi_sys_crypto_info crypto;
 
     int ret;
 
     ret = sysapi_get_kernel_cmdline(cmdline);
     ret = sysapi_get_kernel_meminfo(&meminfo);
+    ret = sysapi_get_kernel_crypto(&crypto);
 
+    while (1) {
+        struct sysapi_sys_crypto_info *t = &crypto;
+
+        printf("crypto name:\n");
+        if (t->avail.name)
+            printf("\tname : %s\n", t->name);
+        if (t->avail.driver)
+            printf("\tdriver : %s\n", t->driver);
+        if (t->avail.module)
+            printf("\tmodule : %s\n", t->module);
+        if (t->avail.priority)
+            printf("\tpriority : %d\n", t->priority);
+        if (t->avail.refcnt)
+            printf("\trefcnt : %d\n", t->refcnt);
+        if (t->avail.selftest)
+            printf("\tselftest : %s\n", t->selftest);
+        if (t->avail.type)
+            printf("\ttype : %s\n", t->type);
+        if (t->avail.seedsize)
+            printf("\tseedsize : %d\n", t->seedsize);
+        if (t->avail.blocksize)
+            printf("\tblocksize : %d\n", t->blocksize);
+        if (t->avail.digestsize)
+            printf("\tdigestsize : %d\n", t->digestsize);
+        if (t->avail.min_keysize)
+            printf("\tminkeysize : %d\n", t->min_keysize);
+        if (t->avail.max_keysize)
+            printf("\tmaxkeysize : %d\n", t->max_keysize);
+
+        if (t->next)
+            t = t->next;
+        else
+            break;
+    }
     return ret;
 }
 #endif
