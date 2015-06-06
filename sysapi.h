@@ -16,7 +16,9 @@
 #include "sysapi_event.h"
 #include "sysapi_time.h"
 #include "sysapi_fs.h"
+#include "sysapi_proc.h"
 #include "sysapi_memact.h"
+#include "sysapi_cirque.h"
 
 #endif
 
