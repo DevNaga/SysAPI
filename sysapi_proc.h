@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <fcntl.h>
+#include "sysapi_libgen.h"
 
 struct sysapi_kernel_meminfo {
 	int memtotal;
