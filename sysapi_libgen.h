@@ -5,5 +5,7 @@
 // exposed to the users
 #define BROKEN __attribute__((visibility ("hidden")))
 
+#define HIDDEN __attribute__((visibility ("hidden")))
+
 #endif
 
