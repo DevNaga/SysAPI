@@ -62,7 +62,7 @@ void sysapi_cirque_add(void *libctx, void *data)
         if (is_free_queue(buf)) {
             buf->data = data;
             buf->allocated = 1;
-            break;
+            return;
         }
         buf = buf->next;
     }
