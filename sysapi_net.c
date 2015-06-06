@@ -9,6 +9,9 @@
 #include <arpa/inet.h>
 #include <sys/ioctl.h>
 #include <net/if.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <fcntl.h>
 
 struct sapi_lib_context {
     int drv_fd;
@@ -264,5 +267,29 @@ err_sock:
 void sapi_inet_udp_server_destroy(int sock)
 {
     close(sock);
+}
+
+int sapi_get_max_conn()
+{
+#define SOMAXCON_NET "/proc/sys/net/core/somaxconn"
+
+    int fd;
+    int ret;
+    char buf[10];
+
+    fd = open(SOMAXCON_NET, O_RDONLY);
+    if (fd < 0)
+        return -1;
+
+    ret = read(fd, buf, sizeof(buf));
+    if (ret > 0)
+        ret = atoi(buf);
+
+    close(fd);
+
+    if (ret >= 0)
+        return ret;
+
+    return -1;
 }
 

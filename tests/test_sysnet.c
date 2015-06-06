@@ -19,16 +19,32 @@ int get_mac_addr(char *ifname)
     return ret;
 }
 
+int get_so_max_conn()
+{
+    int maxconn = sapi_get_max_conn();
+
+    if (maxconn > 0) {
+        printf("maxconn %d\n", maxconn);
+        return 0;
+    }
+
+    return -1;
+}
+
 int main(int argc, char *argv[])
 {
     int ret = -1;
     int opt;
     char *ifname = NULL;
+    int mc = 0;
 
-    while ((opt = getopt(argc, argv, "m:")) != -1) {
+    while ((opt = getopt(argc, argv, "m:c")) != -1) {
         switch (opt) {
             case 'm':
                 ifname = optarg;
+            break;
+            case 'c':
+                mc = 1;
             break;
         }
     }
@@ -39,6 +55,8 @@ int main(int argc, char *argv[])
 
     if (ifname) {
         ret = get_mac_addr(ifname);
+    } else if (mc) {
+        ret = get_so_max_conn();
     }
 
     sapi_lib_context_destroy(libctx);
