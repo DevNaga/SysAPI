@@ -269,10 +269,9 @@ void sapi_inet_udp_server_destroy(int sock)
     close(sock);
 }
 
+#define SOMAXCON_NET "/proc/sys/net/core/somaxconn"
 int sapi_get_max_conn()
 {
-#define SOMAXCON_NET "/proc/sys/net/core/somaxconn"
-
     int fd;
     int ret;
     char buf[10];
@@ -293,3 +292,21 @@ int sapi_get_max_conn()
     return -1;
 }
 
+int sapi_set_max_conn(int conn)
+{
+    int fd;
+    int ret;
+    char buf[10];
+
+    fd = open(SOMAXCON_NET, O_WRONLY);
+    if (fd < 0)
+        return -1;
+
+    sprintf(buf, "%d\n", conn);
+    ret = write(fd, buf, strlen(buf));
+
+    close(fd);
+    return ret > 0 ? 0: -1;
+}
+ 
+#undef SOMAXCON_NET

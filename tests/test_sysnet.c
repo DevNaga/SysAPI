@@ -31,6 +31,20 @@ int get_so_max_conn()
     return -1;
 }
 
+int set_so_max_conn()
+{
+    int maxconn = 200;
+
+    sapi_set_max_conn(maxconn);
+
+    if (maxconn != sapi_get_max_conn()) {
+        printf("failed to set\n");
+        return 0;
+    }
+
+    return -1;
+}
+
 int main(int argc, char *argv[])
 {
     int ret = -1;
@@ -57,6 +71,7 @@ int main(int argc, char *argv[])
         ret = get_mac_addr(ifname);
     } else if (mc) {
         ret = get_so_max_conn();
+        ret = set_so_max_conn();
     }
 
     sapi_lib_context_destroy(libctx);
