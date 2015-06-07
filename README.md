@@ -8,3 +8,7 @@ System level APIs for easy systems programming
 
 #Insertion sort beautiful ex:
 ![Insertion Sort](http://upload.wikimedia.org/wikipedia/commons/9/9c/Insertion-sort-example.gif)
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/DevNaga/sysapi/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
