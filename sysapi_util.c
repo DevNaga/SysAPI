@@ -15,7 +15,7 @@ void sysapi_print_in_red(char *msg, va_list ap)
     char str[1024];
     int len;
 
-    len = snprintf(str, sizeof(str), "[ERR:] ");
+    len = snprintf(str, sizeof(str), "[ERR:   ] ");
     vsnprintf(str + len, sizeof(str) - len, msg, ap);
     fprintf(stderr, ANSI_COLOR_RED"%s"ANSI_COLOR_RESET, str);
 }
@@ -25,7 +25,7 @@ void sysapi_print_in_yellow(char *msg, va_list ap)
     char str[1024];
     int len;
 
-    len = snprintf(str, sizeof(str), "[WARN:] ");
+    len = snprintf(str, sizeof(str), "[WARN:  ] ");
     vsnprintf(str + len, sizeof(str) - len, msg, ap);
     fprintf(stdout, ANSI_COLOR_YELLOW"%s"ANSI_COLOR_RESET, str);
 }
@@ -35,9 +35,19 @@ void sysapi_print_in_green(char *msg, va_list ap)
     char str[1024];
     int len;
 
-    len = snprintf(str, sizeof(str), "[INFO:] ");
+    len = snprintf(str, sizeof(str), "[INFO:  ] ");
     vsnprintf(str + len, sizeof(str) - len, msg, ap);
     fprintf(stdout, ANSI_COLOR_GREEN"%s"ANSI_COLOR_RESET, str);
+}
+
+void sysapi_print_in_norm(char *msg, va_list ap)
+{
+    char str[1024];
+    int len;
+
+    len = snprintf(str, sizeof(str), "[INFO:  ] ");
+    vsnprintf(str + len, sizeof(str) - len, msg, ap);
+    fprintf(stdout, "%s", str);
 }
 
 void sysapi_printf(int level, char *msg, ...)
@@ -50,6 +60,7 @@ void sysapi_printf(int level, char *msg, ...)
         {SYSAPI_LEVEL_ERR,  sysapi_print_in_red},
         {SYSAPI_LEVEL_WARN, sysapi_print_in_yellow},
         {SYSAPI_LEVEL_INFO, sysapi_print_in_green},
+        {SYSAPI_LEVEL_NORM, sysapi_print_in_norm},
     };
 
     va_start(ap, msg);
