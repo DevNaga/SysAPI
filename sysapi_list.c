@@ -25,7 +25,7 @@ void *sapi_list_init(void)
     return ctx;
 }
 
-int sapi_add_tail(void *ctx, void *data)
+int sapi_list_add_tail(void *ctx, void *data)
 {
     int ret;
     struct sapi_list_ctx *list_ctx = ctx;
@@ -49,7 +49,7 @@ int sapi_add_tail(void *ctx, void *data)
     return ret;
 }
 
-int sapi_get_data_iter(void *ctx, int (*iter_func)(void *ctx, void *data))
+int sapi_list_get_data_iter(void *ctx, int (*iter_func)(void *ctx, void *data))
 {
     int ret;
     struct sapi_list_ctx *list_ctx = ctx;
@@ -67,7 +67,7 @@ int sapi_get_data_iter(void *ctx, int (*iter_func)(void *ctx, void *data))
     return ret;
 }
 
-void* sapi_get_next_data(void *ctx)
+void* sapi_list_get_next_data(void *ctx)
 {
     struct sapi_list_ctx *list_ctx = ctx;
     struct sapi_list *list = list_ctx->next_iter;
@@ -76,7 +76,7 @@ void* sapi_get_next_data(void *ctx)
     return list->data;
 }
 
-int sapi_delete(void *ctx, int (*delete)(void *, void *), void *data)
+int sapi_list_delete(void *ctx, int (*delete)(void *, void *), void *data)
 {
     int ret;
     struct sapi_list_ctx *list_ctx = ctx;
@@ -117,7 +117,7 @@ int sapi_delete(void *ctx, int (*delete)(void *, void *), void *data)
     return ret;
 }
 
-int sapi_deinit(void *ctx, int (*freefunc)(void *, void *))
+int sapi_list_deinit(void *ctx, int (*freefunc)(void *, void *))
 {
     struct sapi_list_ctx *list_ctx = ctx;
     struct sapi_list *prev, *cur;
