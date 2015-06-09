@@ -66,6 +66,32 @@ int sapi_get_ifaddr(void *ctx, char *ifname, char *ifaddr)
     return (ret >= 0) ? 0: -1;
 }
 
+int sysapi_get_mtu(char *ifname)
+{
+    int ret;
+    int fd;
+
+    fd = socket(AF_INET, SOCK_DGRAM, 0);
+    if (fd < 0)
+        return -1;
+
+    struct ifreq ifr;
+
+    ifr.ifr_addr.sa_family = AF_INET;
+    strcpy(ifr.ifr_name, ifname);
+
+    ret = ioctl(fd, SIOCGIFMTU, &ifr);
+    if (ret < 0) {
+        close(fd);
+        return -1;
+    }
+
+    close(fd);
+    ret = ifr.ifr_mtu;
+
+    return ret;
+}
+
 int sapi_unix_tcp_server_create(char *path, int n_conns)
 {
     int ret;

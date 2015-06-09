@@ -19,6 +19,14 @@ int get_mac_addr(char *ifname)
     return ret;
 }
 
+int get_mtu()
+{
+    int mtu = sysapi_get_mtu("enp0s3");
+    printf("mtu %d\n", mtu);
+
+    return mtu;
+}
+
 int get_so_max_conn()
 {
     int maxconn = sapi_get_max_conn();
@@ -51,14 +59,18 @@ int main(int argc, char *argv[])
     int opt;
     char *ifname = NULL;
     int mc = 0;
+    int mtu = 0;
 
-    while ((opt = getopt(argc, argv, "m:c")) != -1) {
+    while ((opt = getopt(argc, argv, "m:cM")) != -1) {
         switch (opt) {
             case 'm':
                 ifname = optarg;
             break;
             case 'c':
                 mc = 1;
+            break;
+            case 'M':
+                mtu = 1;
             break;
         }
     }
@@ -72,6 +84,8 @@ int main(int argc, char *argv[])
     } else if (mc) {
         ret = get_so_max_conn();
         ret = set_so_max_conn();
+    } else if (mtu) {
+        ret = get_mtu();
     }
 
     sapi_lib_context_destroy(libctx);
