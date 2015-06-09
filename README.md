@@ -1,6 +1,14 @@
 # SysAPI
 System level APIs for easy systems programming
 
+This repo is a test / learning set of examples or API which guide to
+easier and quicker systems programming in Linux.
+
+The library only uses pthreads (the pthread support can be hidden via a
+macro but that disables the event looping).
+
+When you are using this library use it with ```c -lsysapi ``` and ```c -pthread``` option.
+
 [![Build Status](https://travis-ci.org/DevNaga/SysAPI.svg?branch=master)]
 (https://travis-ci.org/DevNaga/SysAPI/)
 
