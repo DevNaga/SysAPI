@@ -19,6 +19,45 @@ int sysapi_get_kernel_cmdline(char *cmdline)
     return 0;
 }
 
+#define PROC_HOSTNAME "/proc/sys/kernel/hostname"
+
+int sysapi_proc_get_hostname(char *hostname, int len)
+{
+    int fd;
+
+    fd = open(PROC_HOSTNAME, O_RDONLY);
+    if (fd < 0)
+        return -1;
+
+    read(fd, hostname, len);
+
+    close(fd);
+
+    return 0;
+}
+
+int sysapi_proc_set_hostname(char *hostname, int len)
+{
+    int fd;
+    char *buff;
+
+    fd = open(PROC_HOSTNAME, O_WRONLY);
+    if (fd < 0)
+        return -1;
+
+    buff = calloc(1, len + 1); // for '\n'
+    if (!buff) {
+        close(fd);
+        return -1;
+    }
+
+    sprintf(buff, "%s\n", hostname);
+    write(fd, buff, len + 1);
+    close(fd);
+
+    return 0;
+}
+
 int sysapi_get_kernel_meminfo(struct sysapi_kernel_meminfo *meminfo)
 {
 #define SYSAPI_MEMTOTAL "MemTotal"
@@ -339,9 +378,13 @@ int main(void)
     char cmdline[200];
     struct sysapi_kernel_meminfo meminfo;
     struct sysapi_sys_crypto_info crypto;
+    char hostname[20];
 
     int ret;
 
+    sysapi_proc_get_hostname(hostname, sizeof(hostname));
+    strcpy(hostname, "devnaga");
+    sysapi_proc_set_hostname(hostname, strlen(hostname) + 1);
     ret = sysapi_get_kernel_cmdline(cmdline);
     ret = sysapi_get_kernel_meminfo(&meminfo);
     ret = sysapi_get_kernel_crypto(&crypto);
