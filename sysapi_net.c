@@ -92,6 +92,35 @@ int sysapi_get_mtu(char *ifname)
     return ret;
 }
 
+int sysapi_get_netmask(char *ifname, char *nmask)
+{
+    int ret;
+    struct sockaddr_in *_nmask;
+    int fd;
+
+    fd = socket(AF_INET, SOCK_DGRAM, 0);
+    if (fd < 0)
+        return -1;
+
+    struct ifreq ifr;
+
+    ifr.ifr_addr.sa_family = AF_INET;
+    strcpy(ifr.ifr_name, ifname);
+
+    ret = ioctl(fd, SIOCGIFNETMASK, &ifr);
+    if (ret < 0) {
+        close(fd);
+        return -1;
+    }
+
+    _nmask = (struct sockaddr_in *)(&ifr.ifr_netmask);
+    strcpy(nmask, inet_ntoa(_nmask->sin_addr));
+
+    close(fd);
+
+    return -1;
+}
+
 int sapi_unix_tcp_server_create(char *path, int n_conns)
 {
     int ret;

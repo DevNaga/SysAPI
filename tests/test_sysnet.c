@@ -60,8 +60,9 @@ int main(int argc, char *argv[])
     char *ifname = NULL;
     int mc = 0;
     int mtu = 0;
+    int nm = 0;
 
-    while ((opt = getopt(argc, argv, "m:cM")) != -1) {
+    while ((opt = getopt(argc, argv, "m:cMn")) != -1) {
         switch (opt) {
             case 'm':
                 ifname = optarg;
@@ -71,6 +72,9 @@ int main(int argc, char *argv[])
             break;
             case 'M':
                 mtu = 1;
+            break;
+            case 'n':
+                nm = 1;
             break;
         }
     }
@@ -86,6 +90,10 @@ int main(int argc, char *argv[])
         ret = set_so_max_conn();
     } else if (mtu) {
         ret = get_mtu();
+    } else if (nm) {
+        char net[30];
+        ret = sysapi_get_netmask("enp0s3", net);
+        printf("netmask %s\n", net);
     }
 
     sapi_lib_context_destroy(libctx);
