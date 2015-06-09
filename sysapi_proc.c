@@ -57,6 +57,25 @@ int sysapi_proc_set_hostname(char *hostname, int len)
 
     return 0;
 }
+#undef PROC_HOSTNAME
+
+#define PROC_OS_RELEASE "/proc/sys/kernel/osrelease"
+
+int sysapi_get_kernel_release(char *release, int len)
+{
+    int fd;
+
+    fd = open(PROC_OS_RELEASE, O_RDONLY);
+    if (fd < 0)
+        return -1;
+
+    read(fd, release, len);
+    close(fd);
+
+    return 0;
+}
+
+#undef PROC_OS_RELEASE
 
 int sysapi_get_kernel_meminfo(struct sysapi_kernel_meminfo *meminfo)
 {
@@ -379,8 +398,12 @@ int main(void)
     struct sysapi_kernel_meminfo meminfo;
     struct sysapi_sys_crypto_info crypto;
     char hostname[20];
+    char release[30];
 
     int ret;
+
+    sysapi_get_kernel_release(release, sizeof(release));
+    printf("release %s\n", release);
 
     sysapi_proc_get_hostname(hostname, sizeof(hostname));
     strcpy(hostname, "devnaga");
