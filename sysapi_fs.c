@@ -23,10 +23,10 @@ int sysapi_dir_read(char *dirpath,
 
         stat(path, &sf);
 
-        if (sf.st_mode & S_IFREG)
+        if (S_ISREG(sf.st_mode))
             type = SYSAPI_FILE_TYPE_REGFILE;
 
-        if (sf.st_mode & S_IFDIR)
+        if (S_ISDIR(sf.st_mode))
             type = SYSAPI_FILE_TYPE_DIRECT;
 
         if (type == SYSAPI_FILE_TYPE_REGFILE ||
@@ -73,6 +73,18 @@ int sysapi_get_filesize(char *filename)
         return ret;
 
     return st.st_size;
+}
+
+int sysapi_get_symlink_count(char *filename)
+{
+    struct stat st;
+    int ret;
+
+    ret = stat(filename, &st);
+    if (ret < 0)
+        return ret;
+
+    return st.st_nlink;
 }
 
 // mini lsof command implementer API..
@@ -155,4 +167,5 @@ int sapi_ramfs_read(void *fs_data, void *data, int len)
 
     return len;
 }
+
 
