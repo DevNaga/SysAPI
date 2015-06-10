@@ -48,6 +48,18 @@ int sysapi_describe_link(char *linkpath, char *actualname, int actual_len)
     return ret;
 }
 
+int sysapi_touch(char *filename)
+{
+    int fd;
+
+    fd = open(filename, O_RDWR | O_CREAT, S_IRWXU);
+    if (fd < 0)
+        return -1;
+
+    close(fd);
+    return 0;
+}
+
 int sysapi_dir_walk(char *dirpath,
                     void (*callback)(char *parent, char *filename, void *app_ctx),
                     void *app_ctx)

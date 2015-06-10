@@ -26,6 +26,7 @@ int main(void)
     ret = sysapi_read_binfile(file, test_file_cb, NULL);
     ret = sysapi_dir_walk(dir, test_dir_walk, NULL);
     ret = sysapi_describe_link("/media/sf_github/SysAPI/readme", path, sizeof(path));
+    ret = sysapi_touch("test1");
     return ret;
 }
 
