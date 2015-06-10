@@ -38,6 +38,16 @@ int sysapi_dir_read(char *dirpath,
     return 0;
 }
 
+int sysapi_describe_link(char *linkpath, char *actualname, int actual_len)
+{
+    ssize_t ret;
+
+    ret = readlink(linkpath, actualname, actual_len);
+    if (ret > 0)
+        actualname[ret] = '\0';
+    return ret;
+}
+
 int sysapi_dir_walk(char *dirpath,
                     void (*callback)(char *parent, char *filename, void *app_ctx),
                     void *app_ctx)
