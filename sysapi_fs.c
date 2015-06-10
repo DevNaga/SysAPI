@@ -38,6 +38,80 @@ int sysapi_dir_read(char *dirpath,
     return 0;
 }
 
+int sysapi_list_dir(char *dirpath,
+                    void (*callback)(char *dirname, void *ctx),
+                    void *ctx)
+{
+    DIR *dirp;
+    struct dirent *entry;
+    char path[300];
+
+    dirp = opendir(dirpath);
+    if (!dirp)
+        return -1;
+
+    while ((entry = readdir(dirp)) != NULL) {
+        memset(path, 0, sizeof(path));
+
+        struct stat sf;
+
+        stat(entry->d_name, &sf);
+
+        if (S_ISDIR(sf.st_mode))
+            callback(entry->d_name, ctx);
+    }
+
+    closedir(dirp);
+    return 0;
+}
+
+int sysapi_create_symlink(char *original_file_path, char *symlink_path)
+{
+    return symlink(original_file_path, symlink_path);
+}
+
+int sysapi_describe_link(char *linkpath, char *actualname, int actual_len)
+{
+    ssize_t ret;
+
+    ret = readlink(linkpath, actualname, actual_len);
+    if (ret > 0)
+        actualname[ret] = '\0';
+    return ret;
+}
+
+int sysapi_create_pidfile(char *filename)
+{
+    pid_t pid;
+    char buff[31];
+    int fd;
+
+    pid = getpid();
+
+    sprintf(buff, "%d", pid);
+
+    fd = open(filename, O_RDWR | O_CREAT, S_IRWXU);
+    if (fd < 0)
+        return -1;
+
+    write(fd, buff, strlen(buff));
+//    unlink(filename);
+
+    return 0;
+}
+
+int sysapi_touch(char *filename)
+{
+    int fd;
+
+    fd = open(filename, O_RDWR | O_CREAT, S_IRWXU);
+    if (fd < 0)
+        return -1;
+
+    close(fd);
+    return 0;
+}
+
 int sysapi_dir_walk(char *dirpath,
                     void (*callback)(char *parent, char *filename, void *app_ctx),
                     void *app_ctx)
@@ -126,6 +200,7 @@ int sysapi_get_symlink_count(char *filename)
     return st.st_nlink;
 }
 
+#ifdef CONFIG_ADVANCED
 // mini lsof command implementer API..
 int sysapi_get_files_inuse(char *progname,
                            void (*callback)(char *filename, void *app_ctx),
@@ -135,6 +210,7 @@ int sysapi_get_files_inuse(char *progname,
     struct dirent *entry;
     char path[300];
 }
+#endif
 
 struct sysapi_shmsys {
 #define SAPI_SHM_SIZE 1024 * 10

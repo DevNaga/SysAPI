@@ -233,7 +233,7 @@ int sysapi_get_kernel_meminfo(struct sysapi_kernel_meminfo *meminfo)
 
         for (list = 0; list < size; list++) {
             if (strcmp(_meminfo[list].name, src) == 0) {
-                int *value = (long)((long)(meminfo) + _meminfo[list].off);
+                long *value = (long *)((long)(meminfo) + _meminfo[list].off);
 
                 *value = atoi(dst);
             }
@@ -281,10 +281,8 @@ BROKEN int sysapi_get_kernel_crypto(struct sysapi_sys_crypto_info *crypto)
 #define CRYPRO_MINKEYSIZE "min keysize"
 #define CRYPTO_MAXKEYSIZE "max keysize"
 #define PROC_CRYPT "/proc/crypto"
-    int ret;
     FILE *fp;
     char filedata[1024];
-    int t = 0;
 
     fp = fopen(PROC_CRYPT, "r");
     if (!fp)
@@ -297,7 +295,6 @@ BROKEN int sysapi_get_kernel_crypto(struct sysapi_sys_crypto_info *crypto)
     struct sysapi_sys_crypto_info info;
 
     while (fgets(filedata, sizeof(filedata), fp)) {
-        int i = 0, j = 0;
         struct sysapi_sys_crypto_info *new = &info;
             
         if (changed != old) {
