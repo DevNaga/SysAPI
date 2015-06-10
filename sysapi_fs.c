@@ -38,6 +38,45 @@ int sysapi_dir_read(char *dirpath,
     return 0;
 }
 
+int sysapi_dir_walk(char *dirpath,
+                    void (*callback)(char *parent, char *filename, void *app_ctx),
+                    void *app_ctx)
+{
+    DIR *dirp;
+    struct dirent *entry;
+    char path[300];
+
+    dirp = opendir(dirpath);
+    if (!dirp)
+        return -1;
+
+    strncpy(path, dirpath, strlen(dirpath) + 1);
+    while ((entry = readdir(dirp)) != NULL) {
+        memset(path, 0, sizeof(path));
+        strcpy(path, dirpath);
+        strcat(path, "/");
+        strncat(path, entry->d_name, strlen(entry->d_name));
+
+        struct stat sf;
+
+        stat(path, &sf);
+
+        if (S_ISREG(sf.st_mode)) {
+            callback(dirpath, path, app_ctx);
+        } else if (S_ISDIR(sf.st_mode)) {
+            strcat(path, "/");
+            if (!strcmp(entry->d_name, ".") ||
+                !strcmp(entry->d_name, "..")) {
+            } else {
+                sysapi_dir_walk(path, callback, app_ctx);
+            }
+        }
+    }
+
+    closedir(dirp);
+    return 0;
+}
+
 int sysapi_read_binfile(char *filename,
                      void (*callback)(char *data, int len, void *app_ctx),
                      void *app_ctx)

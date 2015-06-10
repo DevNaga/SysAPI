@@ -6,7 +6,7 @@ import glob
 builddir = ["tests"]
 
 gcc_command="gcc -Wall"
-gcc_ldcommand="-lpthread -lsysapi"
+gcc_ldcommand="-pthread -lsysapi"
 ignore_warns=" 1>/dev/null 2>/dev/null"
 
 def build():

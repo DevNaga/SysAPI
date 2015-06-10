@@ -10,6 +10,11 @@ void test_file_cb(char *filedata, int len, void *app_ctx)
     printf("data %s", filedata);
 }
 
+void test_dir_walk(char *parent, char *file, void *app_ctx)
+{
+    printf("file %s parent %s\n", file, parent);
+}
+
 int main(void)
 {
     char *dir = ".";
@@ -18,7 +23,7 @@ int main(void)
 
     ret = sysapi_dir_read(dir, test_dir_cb, NULL);
     ret = sysapi_read_binfile(file, test_file_cb, NULL);
-
+    ret = sysapi_dir_walk(dir, test_dir_walk, NULL);
     return ret;
 }
 
