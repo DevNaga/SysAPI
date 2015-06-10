@@ -38,6 +38,33 @@ int sysapi_dir_read(char *dirpath,
     return 0;
 }
 
+int sysapi_list_dir(char *dirpath,
+                    void (*callback)(char *dirname, void *ctx),
+                    void *ctx)
+{
+    DIR *dirp;
+    struct dirent *entry;
+    char path[300];
+
+    dirp = opendir(dirpath);
+    if (!dirp)
+        return -1;
+
+    while ((entry = readdir(dirp)) != NULL) {
+        memset(path, 0, sizeof(path));
+
+        struct stat sf;
+
+        stat(entry->d_name, &sf);
+
+        if (S_ISDIR(sf.st_mode))
+            callback(entry->d_name, ctx);
+    }
+
+    closedir(dirp);
+    return 0;
+}
+
 int sysapi_describe_link(char *linkpath, char *actualname, int actual_len)
 {
     ssize_t ret;
