@@ -48,6 +48,26 @@ int sysapi_describe_link(char *linkpath, char *actualname, int actual_len)
     return ret;
 }
 
+int sysapi_create_pidfile(char *filename)
+{
+    pid_t pid;
+    char buff[31];
+    int fd;
+
+    pid = getpid();
+
+    sprintf(buff, "%d", pid);
+
+    fd = open(filename, O_RDWR | O_CREAT, S_IRWXU);
+    if (fd < 0)
+        return -1;
+
+    write(fd, buff, strlen(buff));
+//    unlink(filename);
+
+    return 0;
+}
+
 int sysapi_touch(char *filename)
 {
     int fd;
