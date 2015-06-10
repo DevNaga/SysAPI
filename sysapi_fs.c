@@ -65,6 +65,11 @@ int sysapi_list_dir(char *dirpath,
     return 0;
 }
 
+int sysapi_create_symlink(char *original_file_path, char *symlink_path)
+{
+    return symlink(original_file_path, symlink_path);
+}
+
 int sysapi_describe_link(char *linkpath, char *actualname, int actual_len)
 {
     ssize_t ret;
@@ -195,6 +200,7 @@ int sysapi_get_symlink_count(char *filename)
     return st.st_nlink;
 }
 
+#ifdef CONFIG_ADVANCED
 // mini lsof command implementer API..
 int sysapi_get_files_inuse(char *progname,
                            void (*callback)(char *filename, void *app_ctx),
@@ -204,6 +210,7 @@ int sysapi_get_files_inuse(char *progname,
     struct dirent *entry;
     char path[300];
 }
+#endif
 
 struct sysapi_shmsys {
 #define SAPI_SHM_SIZE 1024 * 10
