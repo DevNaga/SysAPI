@@ -1,5 +1,9 @@
 #include <stdio.h>
 #include <stdarg.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <fcntl.h>
 #include "sysapi_util.h"
 
 #define ANSI_COLOR_RED     "\x1B[31m"
@@ -136,3 +140,38 @@ int sysapi_stringrand(char *elem, int len)
 
     return 0;
 }
+
+int sysapi_daemonize(char *wd, char *lfile)
+{
+    int pid;
+
+    pid = fork();
+    if (pid < 0)
+        return -1;
+    else if (pid > 0)
+        exit(0);
+
+    setsid();
+
+    chdir(wd);
+
+    int fd, _fd;
+
+    fd = open("/dev/null", O_RDWR);
+    if (fd != 0) {
+        dup2(fd, STDIN_FILENO);
+        dup2(fd, STDOUT_FILENO);
+        dup2(fd, STDERR_FILENO);
+
+        if (fd > 2)
+            close(fd);
+    }
+
+    umask(027);
+
+    _fd = open(lfile, O_RDWR | O_CREAT);
+    if (lockf(_fd, F_TLOCK, 0) < 0)
+        return -1;
+    return 0;
+}
+
