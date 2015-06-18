@@ -176,6 +176,11 @@ int sysapi_read_binfile(char *filename,
     return 0;
 }
 
+int sysapi_file_exist(char *filename)
+{
+    return access(filename, F_OK);
+}
+
 int sysapi_get_filesize(char *filename)
 {
     struct stat st;

@@ -2,6 +2,9 @@
 #define __SYSAPI_UTIL_H__
 #include <stdio.h>
 #include <stdarg.h>
+#include <sys/time.h>
+#include <time.h>
+#include <stdlib.h>
 
 #define SYSAPI_LEVEL_NORM 4
 #define SYSAPI_LEVEL_INFO 3

@@ -70,3 +70,69 @@ void sysapi_printf(int level, char *msg, ...)
     va_end(ap);
 }
 
+int sysapi_get_line(char *buf, FILE *fp, int len)
+{
+    int i = 0;
+    int a;
+
+    while (i < len - 1) {
+        a = fgetc(fp);
+        if ((a == '\n') ||
+            (a == EOF)) {
+            buf[i] = '\0';
+            break;
+        }
+        buf[i] = a;
+        i++;
+    }
+
+    return i;
+}
+
+int sysapi_stringrand(char *elem, int len)
+{
+    char alphabets[] = {
+        'a', 'A',
+        'b', 'B',
+        'c', 'C',
+        'd', 'D',
+        'e', 'E',
+        'f', 'F',
+        'g', 'G',
+        'h', 'H',
+        'i', 'I',
+        'j', 'J',
+        'k', 'K',
+        'l', 'L',
+        'm', 'M',
+        'n', 'N',
+        'o', 'O',
+        'p', 'P',
+        'q', 'Q',
+        'r', 'R',
+        's', 'S',
+        't', 'T',
+        'u', 'U',
+        'v', 'V',
+        'w', 'W',
+        'x', 'X',
+        'y', 'Y',
+        'z', 'Z',
+    };
+    int i;
+    int seed;
+    struct timeval tv;
+    int size_alphabets = sizeof(alphabets) / sizeof(alphabets[0]);
+
+    gettimeofday(&tv, 0);
+    seed = tv.tv_usec;
+
+    srand(seed);
+
+    for (i = 0; i < len - 1; i++)
+        elem[i] = alphabets[rand() % size_alphabets];
+
+    elem[i] = '\0';
+
+    return 0;
+}
