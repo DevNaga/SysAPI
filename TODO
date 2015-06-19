@@ -15,3 +15,5 @@ This is what i can think of this time.. more to go when i read more and more use
 9. more IOCTL based interface API
 10. random number generator with /dev/urandom
 11. testing .. testing .. testing .. when time permits apart from work.
+12. provide /proc/filesystems reading and displaying file systems
+13. a multi ip and port listener API
