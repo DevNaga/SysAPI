@@ -93,6 +93,14 @@ int sysapi_get_line(char *buf, FILE *fp, int len)
     return i;
 }
 
+int sysapi_get_arch(void)
+{
+    if ((size_t)-1 > 0xffffffffUL)
+        return SYSAPI_ARCH_64_BIT;
+    else
+        return SYSAPI_ARCH_32_BIT;
+}
+
 int sysapi_stringrand(char *elem, int len)
 {
     char alphabets[] = {
