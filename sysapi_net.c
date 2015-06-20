@@ -118,7 +118,7 @@ int sysapi_get_netmask(char *ifname, char *nmask)
 
     close(fd);
 
-    return -1;
+    return 0;
 }
 
 int sapi_unix_tcp_server_create(char *path, int n_conns)
