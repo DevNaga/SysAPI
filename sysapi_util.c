@@ -175,3 +175,13 @@ int sysapi_daemonize(char *wd, char *lfile)
     return 0;
 }
 
+int sysapi_device_isatty(int fd)
+{
+    return isatty(fd);
+}
+
+int sysapi_get_ttyname(int fd, char *name, int len)
+{
+    return ttyname_r(fd, name, len);
+}
+
