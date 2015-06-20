@@ -39,17 +39,22 @@
 // the last new line from the file will be eliminated from the buffer
 int sysapi_get_line(char *buf, FILE *fp, int len);
 
+// generate a random string of length len bytes
 int sysapi_stringrand(char *elem, int len);
 
 #define SYSAPI_ARCH_64_BIT 1
 #define SYSAPI_ARCH_32_BIT 2
 
+// get the current system architecture
 int sysapi_get_arch(void);
 
+// daemonizing API
 int sysapi_daemonize(char *wd, char *lfile);
 
+// find if the file descriptor is a tty device
 int sysapi_device_isatty(int fd);
 
+// get the tty name of the file descriptor fd
 int sysapi_get_ttyname(int fd, char *name, int len);
 
 #endif
