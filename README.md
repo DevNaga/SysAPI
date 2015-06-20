@@ -12,7 +12,7 @@ When you are using this library use it with ``` -lsysapi ``` and ``` -pthread```
 
 [![Build Status](https://travis-ci.org/DevNaga/SysAPI.svg?branch=master)]
 
-(https://travis-ci.org/DevNaga/SysAPI/)
+(https://travis-ci.org/DevNaga/libsysapi/)
 
 [![Coverage Status](https://coveralls.io/repos/DevNaga/SysAPI/badge.svg)](https://coveralls.io/r/DevNaga/SysAPI)
 
