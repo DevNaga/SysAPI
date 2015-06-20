@@ -24,7 +24,7 @@ int get_mtu()
     int mtu = sysapi_get_mtu("enp0s3");
     printf("mtu %d\n", mtu);
 
-    return mtu;
+    return 0;
 }
 
 int get_so_max_conn()
@@ -47,10 +47,10 @@ int set_so_max_conn()
 
     if (maxconn != sapi_get_max_conn()) {
         printf("failed to set\n");
-        return 0;
+        return -1;
     }
 
-    return -1;
+    return 0;
 }
 
 int main(int argc, char *argv[])
@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
         ret = get_mtu();
     } else if (nm) {
         char net[30];
-        ret = sysapi_get_netmask("enp0s3", net);
+        ret = sysapi_get_netmask("eth0", net);
         printf("netmask %s\n", net);
     }
 
