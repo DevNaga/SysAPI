@@ -10,7 +10,7 @@ macro but that disables the event looping).
 When you are using this library use it with ``` -lsysapi ``` and ``` -pthread``` option.
 
 
-[![Build Status](https://travis-ci.org/DevNaga/SysAPI.svg?branch=master)]
+[![Build Status](https://travis-ci.org/DevNaga/libsysapi.svg?branch=master)]
 
 (https://travis-ci.org/DevNaga/libsysapi/)
 
