@@ -57,5 +57,11 @@ int sysapi_device_isatty(int fd);
 // get the tty name of the file descriptor fd
 int sysapi_get_ttyname(int fd, char *name, int len);
 
+// generate a near pure random number from kernel device
+int sysapi_get_rand(void);
+
+// generate a random number with in the range 0 - range.
+int sysapi_get_rand_range(int range);
+
 #endif
 

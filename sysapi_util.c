@@ -149,6 +149,39 @@ int sysapi_stringrand(char *elem, int len)
     return 0;
 }
 
+int sysapi_get_rand(void)
+{
+    int fd;
+    int ret;
+    int number = 0;
+    
+    fd = open("/dev/urandom", O_RDONLY);
+    if (fd < 0)
+        return -1;
+    
+    ret = read(fd, &number, sizeof(number));
+    if (ret < 0) {
+        close(ret);
+        return -1;
+    }
+    
+    return number;
+}
+
+int sysapi_get_rand_range(int range)
+{
+    int ret;
+    
+    ret = sysapi_get_rand();
+    if (ret != -1) {
+        if (ret < 0)
+            ret *= -1;
+        return ret % range;
+    }
+    
+    return ret;
+}
+
 int sysapi_daemonize(char *wd, char *lfile)
 {
     int pid;
@@ -192,4 +225,6 @@ int sysapi_get_ttyname(int fd, char *name, int len)
 {
     return ttyname_r(fd, name, len);
 }
+
+
 
