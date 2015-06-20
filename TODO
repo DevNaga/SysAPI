@@ -9,11 +9,9 @@ This is what i can think of this time.. more to go when i read more and more use
 3. provide utility API to log to syslog
 4. provide utility for logging on the console (in case of errors)
 5. sharedmemory based message passing (socket + shm)
-6. doubly linked list implementation
-7. adding support for timers in the event library
-8. adding support for signals and signal handling (more reading of signals and async safe APIs)
-9. more IOCTL based interface API
-10. random number generator with /dev/urandom
-11. testing .. testing .. testing .. when time permits apart from work.
-12. provide /proc/filesystems reading and displaying file systems
-13. a multi ip and port listener API
+6. adding support for timers in the event library
+7. adding support for signals and signal handling (more reading of signals and async safe APIs)
+8. more IOCTL based interface API
+9. testing .. testing .. testing .. when time permits apart from work.
+10. provide /proc/filesystems reading and displaying file systems
+11. a multi ip and port listener API
