@@ -3,10 +3,10 @@
 import os
 
 sysnet_tests=[
-        "./test_sysnet -m eth0",
-        "./test_sysnet -c",
-        "./test_sysnet -M",
-        "./test_sysnet -n",
+        "sudo ./test_sysnet -m eth0",
+        "sudo ./test_sysnet -c",
+        "sudo ./test_sysnet -M",
+        "sudo ./test_sysnet -n",
         ]
 
 syscirque_tests=[
