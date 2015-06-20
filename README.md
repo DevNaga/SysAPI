@@ -9,14 +9,14 @@ macro but that disables the event looping).
 
 When you are using this library use it with ``` -lsysapi ``` and ``` -pthread``` option.
 
+
 [![Build Status](https://travis-ci.org/DevNaga/SysAPI.svg?branch=master)]
+
 (https://travis-ci.org/DevNaga/SysAPI/)
 
 [![Coverage Status](https://coveralls.io/repos/DevNaga/SysAPI/badge.svg)](https://coveralls.io/r/DevNaga/SysAPI)
 
 #Insertion sort beautiful ex:
-![Insertion Sort](http://upload.wikimedia.org/wikipedia/commons/9/9c/Insertion-sort-example.gif)
-
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/DevNaga/sysapi/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
