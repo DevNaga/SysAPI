@@ -1,4 +1,4 @@
-# SysAPI
+# libsysapi
 System level APIs to make systems programming simpler.
 
 The library (as of now) provides the following features:
