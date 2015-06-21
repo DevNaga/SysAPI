@@ -205,11 +205,16 @@ int sapi_inet_tcp_server_create(char *ip, int port, int n_conns)
     };
 
     int sock;
+    int opt = 1;
 
     sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0)
         return -1;
 
+    ret = setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+    if (ret < 0)
+        goto err_sockopt;
+    
     ret = bind(sock, (struct sockaddr *)&serv, sizeof(serv));
     if (ret < 0)
         goto err_bind;
@@ -222,6 +227,7 @@ int sapi_inet_tcp_server_create(char *ip, int port, int n_conns)
 
 err_listen:
 err_bind:
+err_sockopt:
     close(sock);
     return -1;
 }
@@ -304,16 +310,23 @@ int sapi_inet_udp_server_create(char *ip_addr, int port)
     serv.sin_addr.s_addr = inet_addr(ip_addr);
     serv.sin_port = htons(port);
 
+    int opt = 1;
+    
     sock = socket(AF_INET, SOCK_DGRAM, 0);
     if (sock < 0)
         return -1;
 
+    ret = setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+    if (ret < 0)
+        goto err_sockopt;
+    
     ret = bind(sock, (struct sockaddr *)&serv, sizeof(serv));
     if (ret < 0)
         goto err_sock;
 
     return sock;
 
+err_sockopt:
 err_sock:
     close(sock);
     return -1;
@@ -327,7 +340,6 @@ void sapi_inet_udp_server_destroy(int sock)
 int sapi_inet_udp_client_create(char *ip_addr, int port, struct sockaddr_in *serv)
 {
     int sock;
-    int ret;
     
     serv->sin_family = AF_INET;
     serv->sin_addr.s_addr = inet_addr(ip_addr);
