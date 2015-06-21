@@ -324,6 +324,27 @@ void sapi_inet_udp_server_destroy(int sock)
     close(sock);
 }
 
+int sapi_inet_udp_client_create(char *ip_addr, int port, struct sockaddr_in *serv)
+{
+    int sock;
+    int ret;
+    
+    serv->sin_family = AF_INET;
+    serv->sin_addr.s_addr = inet_addr(ip_addr);
+    serv->sin_port = htons(port);
+    
+    sock = socket(AF_INET, SOCK_DGRAM, 0);
+    if (sock < 0)
+        return -1;
+    
+    return sock;
+}
+
+void sapi_inet_udp_client_destroy(int sock)
+{
+    close(sock);
+}
+
 #define SOMAXCON_NET "/proc/sys/net/core/somaxconn"
 int sapi_get_max_conn()
 {
@@ -363,5 +384,5 @@ int sapi_set_max_conn(int conn)
     close(fd);
     return ret > 0 ? 0: -1;
 }
- 
+
 #undef SOMAXCON_NET
