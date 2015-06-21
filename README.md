@@ -1,14 +1,25 @@
 # SysAPI
-System level APIs for easy systems programming
+System level APIs to make systems programming simpler.
 
-This repo is a test / learning set of examples or API which guide to
-easier and quicker systems programming in Linux.
+The library (as of now) provides the following features:
+
+1. Event based function calling mechanism with select
+2. Hash tables, Lists, Doubly linked list, Circular Queues, Stacks and Queues as simple but efficient API.
+3. File systems interface API, directory list, directory walk (dir in a dir), file read, simple ramfs and some file level API for general purpose file manipulation.
+4. Memory controller / accountant (A very simple and basic) that helps restrict your program's memory usage.
+5. Network device / interface handling API.
+6. Process file system (/proc) API for proc file manipulation for statistics / poll based monitoring applications.
+7. Time APIs (very basic and needs more work)
+8. Utilities: Printf (but colored output depending on the log level/ priority), daemonizing API (so that you don't have to remember how to setup a daemon), random number and string generators, tty and finding what arch you are running APIs.
+
+For more details about my future works.. please have a look at the TODO file in the repository.
 
 The library only uses pthreads (the pthread support can be hidden via a
 macro but that disables the event looping).
 
 When you are using this library use it with ``` -lsysapi ``` and ``` -pthread``` option.
 
+Please note that the library is "not" well tested and it is still in its pre-matured stage.
 
 [![Build Status](https://travis-ci.org/DevNaga/libsysapi.svg?branch=master)](https://travis-ci.org/DevNaga/libsysapi/)
 
