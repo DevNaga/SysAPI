@@ -10,9 +10,17 @@ void test_file_cb(char *filedata, int len, void *app_ctx)
     printf("data %s", filedata);
 }
 
-void test_dir_walk(char *parent, char *file, void *app_ctx)
+void test_dir_walk(char *parent, sysapi_file_type type, char *file, void *app_ctx)
 {
-    printf("file %s parent %s\n", file, parent);
+    switch (type) {
+        case SYSAPI_FILE_TYPE_REGFILE:
+            printf("file ");
+        break;
+        case SYSAPI_FILE_TYPE_DIRECT:
+            printf("directory ");
+        break;
+    }
+    printf(" %s parent %s\n", file, parent);
 }
 
 void test_list_dir(char *dir, void *ctx)
@@ -36,4 +44,3 @@ int main(void)
     ret = sysapi_list_dir(dir, test_list_dir, NULL);
     return ret;
 }
-
