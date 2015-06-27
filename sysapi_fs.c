@@ -88,7 +88,7 @@ int sysapi_create_pidfile(char *filename)
 
     pid = getpid();
 
-    sprintf(buff, "%d", pid);
+    snprintf(buff, sizeof(buff), "%d", pid);
 
     fd = open(filename, O_RDWR | O_CREAT, S_IRWXU);
     if (fd < 0)
@@ -96,7 +96,8 @@ int sysapi_create_pidfile(char *filename)
 
     write(fd, buff, strlen(buff));
 //    unlink(filename);
-
+    close(fd);
+    
     return 0;
 }
 
@@ -113,7 +114,7 @@ int sysapi_touch(char *filename)
 }
 
 int sysapi_dir_walk(char *dirpath,
-                    void (*callback)(char *parent, char *filename, void *app_ctx),
+                    void (*callback)(char *parent, sysapi_file_type file_type, char *filename, void *app_ctx),
                     void *app_ctx)
 {
     DIR *dirp;
@@ -128,7 +129,10 @@ int sysapi_dir_walk(char *dirpath,
     while ((entry = readdir(dirp)) != NULL) {
         memset(path, 0, sizeof(path));
         strcpy(path, dirpath);
-        strcat(path, "/");
+
+        if (path[strlen(path) - 1] != '/')
+            strcat(path, "/");
+
         strncat(path, entry->d_name, strlen(entry->d_name));
 
         struct stat sf;
@@ -136,12 +140,14 @@ int sysapi_dir_walk(char *dirpath,
         stat(path, &sf);
 
         if (S_ISREG(sf.st_mode)) {
-            callback(dirpath, path, app_ctx);
+            callback(dirpath, SYSAPI_FILE_TYPE_REGFILE, path, app_ctx);
         } else if (S_ISDIR(sf.st_mode)) {
-            strcat(path, "/");
+            if (path[strlen(path) - 1] != '/')
+                strcat(path, "/");
             if (!strcmp(entry->d_name, ".") ||
                 !strcmp(entry->d_name, "..")) {
             } else {
+                callback(dirpath, SYSAPI_FILE_TYPE_DIRECT, path, app_ctx);
                 sysapi_dir_walk(path, callback, app_ctx);
             }
         }
@@ -174,6 +180,11 @@ int sysapi_read_binfile(char *filename,
 
     close(fd);
     return 0;
+}
+
+int sysapi_file_exist(char *filename)
+{
+    return access(filename, F_OK);
 }
 
 int sysapi_get_filesize(char *filename)
@@ -210,7 +221,6 @@ int sysapi_get_files_inuse(char *progname,
     struct dirent *entry;
     char path[300];
 }
-#endif
 
 struct sysapi_shmsys {
 #define SAPI_SHM_SIZE 1024 * 10
@@ -283,4 +293,4 @@ int sapi_ramfs_read(void *fs_data, void *data, int len)
     return len;
 }
 
-
+#endif

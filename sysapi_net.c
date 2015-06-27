@@ -118,7 +118,7 @@ int sysapi_get_netmask(char *ifname, char *nmask)
 
     close(fd);
 
-    return -1;
+    return 0;
 }
 
 int sapi_unix_tcp_server_create(char *path, int n_conns)
@@ -205,11 +205,16 @@ int sapi_inet_tcp_server_create(char *ip, int port, int n_conns)
     };
 
     int sock;
+    int opt = 1;
 
     sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0)
         return -1;
 
+    ret = setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+    if (ret < 0)
+        goto err_sockopt;
+    
     ret = bind(sock, (struct sockaddr *)&serv, sizeof(serv));
     if (ret < 0)
         goto err_bind;
@@ -222,6 +227,7 @@ int sapi_inet_tcp_server_create(char *ip, int port, int n_conns)
 
 err_listen:
 err_bind:
+err_sockopt:
     close(sock);
     return -1;
 }
@@ -304,22 +310,49 @@ int sapi_inet_udp_server_create(char *ip_addr, int port)
     serv.sin_addr.s_addr = inet_addr(ip_addr);
     serv.sin_port = htons(port);
 
+    int opt = 1;
+    
     sock = socket(AF_INET, SOCK_DGRAM, 0);
     if (sock < 0)
         return -1;
 
+    ret = setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+    if (ret < 0)
+        goto err_sockopt;
+    
     ret = bind(sock, (struct sockaddr *)&serv, sizeof(serv));
     if (ret < 0)
         goto err_sock;
 
     return sock;
 
+err_sockopt:
 err_sock:
     close(sock);
     return -1;
 }
 
 void sapi_inet_udp_server_destroy(int sock)
+{
+    close(sock);
+}
+
+int sapi_inet_udp_client_create(char *ip_addr, int port, struct sockaddr_in *serv)
+{
+    int sock;
+    
+    serv->sin_family = AF_INET;
+    serv->sin_addr.s_addr = inet_addr(ip_addr);
+    serv->sin_port = htons(port);
+    
+    sock = socket(AF_INET, SOCK_DGRAM, 0);
+    if (sock < 0)
+        return -1;
+    
+    return sock;
+}
+
+void sapi_inet_udp_client_destroy(int sock)
 {
     close(sock);
 }
@@ -363,5 +396,59 @@ int sapi_set_max_conn(int conn)
     close(fd);
     return ret > 0 ? 0: -1;
 }
- 
+
 #undef SOMAXCON_NET
+
+static int __sapi_sock_set_optint(int sock, int so_lvl, int opt_name)
+{
+    int opt = 1;
+    
+    return setsockopt(sock, so_lvl, opt_name, &opt, sizeof(opt));
+}
+
+static int __sapi_sock_reset_optint(int sock, int so_lvl, int opt_name)
+{
+    int opt = 0;
+    
+    return setsockopt(sock, so_lvl, opt_name, &opt, sizeof(opt));
+}
+
+int sapi_sock_set_reuseaddr(int sock)
+{
+    return __sapi_sock_set_optint(sock, SOL_SOCKET, SO_REUSEADDR);
+}
+
+int sapi_sock_reset_reuseaddr(int sock)
+{
+    return __sapi_sock_reset_optint(sock, SOL_SOCKET, SO_REUSEADDR);
+}
+
+int sapi_sock_set_debug(int sock)
+{
+    return __sapi_sock_set_optint(sock, SOL_SOCKET, SO_DEBUG);
+}
+
+int sapi_sock_reset_debug(int sock)
+{
+    return __sapi_sock_reset_optint(sock, SOL_SOCKET, SO_DEBUG);
+}
+
+int sapi_sock_set_broadcast(int sock)
+{
+    return __sapi_sock_set_optint(sock, SOL_SOCKET, SO_BROADCAST);
+}
+
+int sapi_sock_reset_broadcast(int sock)
+{
+    return __sapi_sock_reset_optint(sock, SOL_SOCKET, SO_BROADCAST);
+}
+
+int sapi_sock_set_keepalive(int sock)
+{
+    return __sapi_sock_set_optint(sock, SOL_SOCKET, SO_KEEPALIVE);
+}
+
+int sapi_sock_reset_keepalive(int sock)
+{
+    return __sapi_sock_reset_optint(sock, SOL_SOCKET, SO_KEEPALIVE);
+}

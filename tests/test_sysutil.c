@@ -7,5 +7,8 @@ int main(void) {
     sysapi_log_err("test: ", "This is an err msg\n");
     sysapi_log_info("testing", "%d %d\n", a, b);
     sysapi_log_norm("testing", "%d %d\n", a, b);
+    printf("%d\n", sysapi_get_arch());
+    printf("%d\n", sysapi_get_rand());
+    printf("%d\n", sysapi_get_rand_range(22));
 }
 
