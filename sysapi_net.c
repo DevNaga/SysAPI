@@ -398,3 +398,57 @@ int sapi_set_max_conn(int conn)
 }
 
 #undef SOMAXCON_NET
+
+static int __sapi_sock_set_optint(int sock, int so_lvl, int opt_name)
+{
+    int opt = 1;
+    
+    return setsockopt(sock, so_lvl, opt_name, &opt, sizeof(opt));
+}
+
+static int __sapi_sock_reset_optint(int sock, int so_lvl, int opt_name)
+{
+    int opt = 0;
+    
+    return setsockopt(sock, so_lvl, opt_name, &opt, sizeof(opt));
+}
+
+int sapi_sock_set_reuseaddr(int sock)
+{
+    return __sapi_sock_set_optint(sock, SOL_SOCKET, SO_REUSEADDR);
+}
+
+int sapi_sock_reset_reuseaddr(int sock)
+{
+    return __sapi_sock_reset_optint(sock, SOL_SOCKET, SO_REUSEADDR);
+}
+
+int sapi_sock_set_debug(int sock)
+{
+    return __sapi_sock_set_optint(sock, SOL_SOCKET, SO_DEBUG);
+}
+
+int sapi_sock_reset_debug(int sock)
+{
+    return __sapi_sock_reset_optint(sock, SOL_SOCKET, SO_DEBUG);
+}
+
+int sapi_sock_set_broadcast(int sock)
+{
+    return __sapi_sock_set_optint(sock, SOL_SOCKET, SO_BROADCAST);
+}
+
+int sapi_sock_reset_broadcast(int sock)
+{
+    return __sapi_sock_reset_optint(sock, SOL_SOCKET, SO_BROADCAST);
+}
+
+int sapi_sock_set_keepalive(int sock)
+{
+    return __sapi_sock_set_optint(sock, SOL_SOCKET, SO_KEEPALIVE);
+}
+
+int sapi_sock_reset_keepalive(int sock)
+{
+    return __sapi_sock_reset_optint(sock, SOL_SOCKET, SO_KEEPALIVE);
+}
