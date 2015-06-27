@@ -482,3 +482,31 @@ int sapi_get_socktype(int sock, char *socket_type)
 {
     return __sapi_get_sock_type(sock, socket_type);
 }
+
+int sapi_get_sndbufsize(int sock)
+{
+    int size;
+    socklen_t sizelen = sizeof(size);
+    int ret;
+    
+    ret = getsockopt(sock, SOL_SOCKET, SO_SNDBUF, &size, &sizelen);
+    if (ret < 0) {
+        return -1;
+    }
+    
+    return size;
+}
+
+int sapi_get_rcvbufsize(int sock)
+{
+    int size;
+    socklen_t sizelen = sizeof(size);
+    int ret;
+    
+    ret = getsockopt(sock, SOL_SOCKET, SO_RCVBUF, &size, &sizelen);
+    if (ret < 0) {
+        return -1;
+    }
+    
+    return size;
+}
