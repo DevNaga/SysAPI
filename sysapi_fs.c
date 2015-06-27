@@ -220,7 +220,6 @@ int sysapi_get_files_inuse(char *progname,
     struct dirent *entry;
     char path[300];
 }
-#endif
 
 struct sysapi_shmsys {
 #define SAPI_SHM_SIZE 1024 * 10
@@ -292,3 +291,5 @@ int sapi_ramfs_read(void *fs_data, void *data, int len)
 
     return len;
 }
+
+#endif
