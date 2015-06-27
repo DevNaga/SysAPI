@@ -88,7 +88,7 @@ int sysapi_create_pidfile(char *filename)
 
     pid = getpid();
 
-    sprintf(buff, "%d", pid);
+    snprintf(buff, sizeof(buff), "%d", pid);
 
     fd = open(filename, O_RDWR | O_CREAT, S_IRWXU);
     if (fd < 0)
@@ -96,7 +96,8 @@ int sysapi_create_pidfile(char *filename)
 
     write(fd, buff, strlen(buff));
 //    unlink(filename);
-
+    close(fd);
+    
     return 0;
 }
 
