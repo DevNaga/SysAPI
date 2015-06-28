@@ -109,3 +109,39 @@ int sapi_queue_work(void *work_priv, void (*func)(void *priv), void *usr_priv)
 
     return 0;
 }
+
+int sapi_start_work_for(void *priv, void (*func)(void *priv))
+{
+    struct work *work = priv;
+    int started = 0;
+    
+    for (; work; work = work->next) {
+        struct worker_queue *queue = work->queue_head;
+        for (; queue; queue = queue->next) {
+            pthread_mutex_lock(&queue->lock);
+            if (queue->func == func) {
+                pthread_cond_signal(&queue->cond);
+                started = 1;
+            }
+            pthread_mutex_unlock(&queue->lock);
+        }
+    }
+    
+    return started;
+}
+
+int sapi_start_work_all(void *priv)
+{
+    struct work *work = priv;
+    
+    for (; work; work = work->next) {
+        struct worker_queue *queue = work->queue_head;
+        for (; queue; queue = queue->next) {
+            pthread_mutex_lock(&queue->mutex);
+            pthread_cond_signal(&queue->cond);
+            pthread_mutex_unlock(&queue->mutex);
+        }
+    }
+    
+    return 1;
+}
