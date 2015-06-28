@@ -118,12 +118,12 @@ int sapi_start_work_for(void *priv, void (*func)(void *priv))
     for (; work; work = work->next) {
         struct worker_queue *queue = work->queue_head;
         for (; queue; queue = queue->next) {
-            pthread_mutex_lock(&queue->lock);
+            pthread_mutex_lock(&queue->mutex);
             if (queue->func == func) {
                 pthread_cond_signal(&queue->cond);
                 started = 1;
             }
-            pthread_mutex_unlock(&queue->lock);
+            pthread_mutex_unlock(&queue->mutex);
         }
     }
     
