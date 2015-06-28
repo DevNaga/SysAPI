@@ -452,3 +452,61 @@ int sapi_sock_reset_keepalive(int sock)
 {
     return __sapi_sock_reset_optint(sock, SOL_SOCKET, SO_KEEPALIVE);
 }
+
+int __sapi_get_sock_type(int sock, char *socket_type)
+{
+    char *socktypes[] = {
+        "tcp",
+        "udp",
+        "unknown",
+    };
+    
+    int type = -1;
+    int typelen = sizeof(type);
+    int ret;
+    
+    ret = getsockopt(sock, SOL_SOCKET, SO_TYPE, &type, &typelen);
+    if (ret < 0) {
+        return -1;
+    }
+    
+    if (type > sizeof(socktypes) / sizeof(socktypes[0])) {
+        return -1;
+    }
+    
+    socket_type = socktypes[type - 1];
+    return 0;
+}
+
+int sapi_get_socktype(int sock, char *socket_type)
+{
+    return __sapi_get_sock_type(sock, socket_type);
+}
+
+int sapi_get_sndbufsize(int sock)
+{
+    int size;
+    socklen_t sizelen = sizeof(size);
+    int ret;
+    
+    ret = getsockopt(sock, SOL_SOCKET, SO_SNDBUF, &size, &sizelen);
+    if (ret < 0) {
+        return -1;
+    }
+    
+    return size;
+}
+
+int sapi_get_rcvbufsize(int sock)
+{
+    int size;
+    socklen_t sizelen = sizeof(size);
+    int ret;
+    
+    ret = getsockopt(sock, SOL_SOCKET, SO_RCVBUF, &size, &sizelen);
+    if (ret < 0) {
+        return -1;
+    }
+    
+    return size;
+}
