@@ -4,7 +4,9 @@ struct worker_queue {
     pthread_t tid;
     pthread_mutex_t mutex;
     pthread_cond_t cond;
+    pthread_attr_t attr;
     void (*func)(void *priv);
+    int start;
     int done;
     void *priv;
     struct worker_queue *next;
@@ -19,9 +21,13 @@ static void *__sapi_worker_thread(void *work)
 {
     struct worker_queue *mywork = work;
     
-    for (; mywork; mywork = mywork->next) {
+    mywork->start = 1;
+
+    for (; ;) {
         pthread_mutex_lock(&mywork->mutex);
+        printf("--> %p\n", mywork);
         pthread_cond_wait(&mywork->cond, &mywork->mutex);
+        printf("unlock %p\n", mywork);
         if (!mywork->done) {
             mywork->func(mywork->priv);
             mywork->done = 1;
@@ -55,7 +61,8 @@ void *sapi_worker_create(void (*func)(void *priv), void *usr_priv)
     
     pthread_mutex_init(&queue->mutex, NULL);
     pthread_cond_init(&queue->cond, NULL);
-    
+    pthread_attr_setdetachstate(&queue->attr, PTHREAD_CREATE_DETACHED);
+
     if (!work->queue_head) {
         work->queue_head = queue;
         work->queue_tail = queue;
@@ -65,12 +72,13 @@ void *sapi_worker_create(void (*func)(void *priv), void *usr_priv)
     }
     
     int ret;
-    ret = pthread_create(&queue->tid, NULL, __sapi_worker_thread, queue);
+    ret = pthread_create(&queue->tid, &queue->attr, __sapi_worker_thread, queue);
     if (ret < 0) {
         free(work);
         free(queue);
         return NULL;
     }
+    while (queue->start == 0);
     
     return work;
 }
@@ -92,6 +100,7 @@ int sapi_queue_work(void *work_priv, void (*func)(void *priv), void *usr_priv)
 
     pthread_mutex_init(&queue->mutex, NULL);
     pthread_cond_init(&queue->cond, NULL);
+    pthread_attr_setdetachstate(&queue->attr, PTHREAD_CREATE_DETACHED);
 
     if (!work->queue_head) {
         work->queue_head = queue;
@@ -103,11 +112,12 @@ int sapi_queue_work(void *work_priv, void (*func)(void *priv), void *usr_priv)
 
     int ret;
 
-    ret = pthread_create(&queue->tid, NULL, __sapi_worker_thread, queue);
+    ret = pthread_create(&queue->tid, &queue->attr, __sapi_worker_thread, queue);
     if (ret < 0) {
         free(queue);
         return -1;
     }
+    while (queue->start == 0);
 
     return 0;
 }
