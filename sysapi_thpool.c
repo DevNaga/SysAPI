@@ -58,6 +58,7 @@ void *sapi_worker_create(void (*func)(void *priv), void *usr_priv)
     
     if (!work->queue_head) {
         work->queue_head = queue;
+        work->queue_tail = queue;
     } else {
         work->queue_tail->next = queue;
         work->queue_tail = queue;
@@ -94,6 +95,7 @@ int sapi_queue_work(void *work_priv, void (*func)(void *priv), void *usr_priv)
 
     if (!work->queue_head) {
         work->queue_head = queue;
+        work->queue_tail = queue;
     } else {
         work->queue_tail->next = queue;
         work->queue_tail = queue;
