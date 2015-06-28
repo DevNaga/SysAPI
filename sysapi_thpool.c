@@ -64,7 +64,7 @@ void *sapi_worker_create(void (*func)(void *priv), void *usr_priv)
     }
     
     int ret;
-    ret = pthread_create(&queue->tid, NULL, func, queue);
+    ret = pthread_create(&queue->tid, NULL, __sapi_worker_thread, queue);
     if (ret < 0) {
         free(work);
         free(queue);
@@ -89,8 +89,8 @@ int sapi_queue_work(void *work_priv, void (*func)(void *priv), void *usr_priv)
     queue->func = func;
     queue->next = NULL;
 
-    pthread_mutex_init(&queue->mutex);
-    pthread_cond_init(&queue->cond);
+    pthread_mutex_init(&queue->mutex, NULL);
+    pthread_cond_init(&queue->cond, NULL);
 
     if (!work->queue_head) {
         work->queue_head = queue;
