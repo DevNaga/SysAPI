@@ -11,6 +11,8 @@ The library (as of now) provides the following features:
 6. Process file system (/proc) API for proc file manipulation for statistics / poll based monitoring applications.
 7. Time APIs (very basic and needs more work)
 8. Utilities: Printf (but colored output depending on the log level/ priority), daemonizing API (so that you don't have to remember how to setup a daemon), random number and string generators, tty and finding what arch you are running APIs.
+9. Basic Threadpools implementation. One thread per work only. Plans for moving to one thread doing multiple work and still
+supporting multiple threads doing multiples of work..
 
 For more details about my future works.. please have a look at the TODO file in the repository.
 
