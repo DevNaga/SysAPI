@@ -61,6 +61,7 @@ void *sapi_worker_create(void (*func)(void *priv), void *usr_priv)
     
     pthread_mutex_init(&queue->mutex, NULL);
     pthread_cond_init(&queue->cond, NULL);
+    pthread_attr_init(&queue->attr);
     pthread_attr_setdetachstate(&queue->attr, PTHREAD_CREATE_DETACHED);
 
     if (!work->queue_head) {
@@ -100,6 +101,7 @@ int sapi_queue_work(void *work_priv, void (*func)(void *priv), void *usr_priv)
 
     pthread_mutex_init(&queue->mutex, NULL);
     pthread_cond_init(&queue->cond, NULL);
+    pthread_attr_init(&queue->attr);
     pthread_attr_setdetachstate(&queue->attr, PTHREAD_CREATE_DETACHED);
 
     if (!work->queue_head) {
