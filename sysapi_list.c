@@ -117,7 +117,7 @@ int sapi_list_delete(void *ctx, int (*delete)(void *, void *), void *data)
     return ret;
 }
 
-int sapi_list_deinit(void *ctx, int (*freefunc)(void *, void *))
+int sapi_list_deinit(void *ctx, void *magic, int (*freefunc)(void *, void *))
 {
     struct sapi_list_ctx *list_ctx = ctx;
     struct sapi_list *prev, *cur;
@@ -128,12 +128,13 @@ int sapi_list_deinit(void *ctx, int (*freefunc)(void *, void *))
 
     ret = 0;
     while (cur) {
-        freefunc(list_ctx, cur->data);
+        freefunc(magic, cur->data);
         prev = cur;
         cur = cur->next;
         free(prev);
     }
 
+    free(list_ctx);
+
     return ret;
 }
-
