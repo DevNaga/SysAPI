@@ -66,6 +66,30 @@ int sapi_get_ifaddr(void *ctx, char *ifname, char *ifaddr)
     return (ret >= 0) ? 0: -1;
 }
 
+int sysapi_get_macaddr(char *ifname, uint8_t *macaddr)
+{
+    int ret;
+    int fd;
+
+    fd = socket(AF_INET, SOCK_DGRAM, 0);
+    if (fd < 0)
+        return -1;
+
+    int i;
+    struct ifreq ifr;
+
+    memset(&ifr, 0, sizeof(struct ifreq));
+    strncpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
+
+    ret = ioctl(fd, SIOCGIFHWADDR, &ifr);
+    if (ret > 0)
+        for (i = 0; i < 6; i++)
+            macaddr[i] = ifr.ifr_addr.sa_data[i];
+
+    close(fd);
+    return ret > 0 ? 0: -1;
+}
+
 int sysapi_get_mtu(char *ifname)
 {
     int ret;
