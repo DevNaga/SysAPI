@@ -151,4 +151,6 @@ void sysapi_dllist_deinit_reverse(void (*freefunc)(void *data, void *magic),
         free(prev);
         prev = iter;
     }
+
+    free(dlhead);
 }
