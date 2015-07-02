@@ -76,4 +76,5 @@ void sysapi_queue_deinit(void (*freefunc)(void *elem, void *magic),
         free(prev);
         prev = elem;
     }
+    free(qhead);
 }
