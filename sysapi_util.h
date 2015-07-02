@@ -27,6 +27,8 @@
 // this will show up as a normal message on the console
 #define sysapi_print_norm(msg, ...) sysapi_printf(SYSAPI_LEVEL_NORM, msg " " __VA_ARGS__)
 
+#define sysapi_print_oom(msg) sysapi_printf(SYSAPI_LEVEL_ERR, msg "%s-> %s:%u  Out of memory\n", __FILE__, __func__, __LINE__)
+
 #define sysapi_log_info sysapi_print_info
 
 #define sysapi_log_warn sysapi_print_warn
@@ -64,4 +66,3 @@ int sysapi_get_rand(void);
 int sysapi_get_rand_range(int range);
 
 #endif
-
