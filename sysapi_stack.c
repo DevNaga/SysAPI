@@ -77,4 +77,6 @@ void sysapi_stack_deinit(void (*freefunc)(void *elem, void *magic),
         free(prev_stack);
         prev_stack = stack;
     }
+
+    free(shead);
 }
