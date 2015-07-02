@@ -264,3 +264,8 @@ int sapi_strvjoin(char *result, int result_len, char *delimiter, int n_strings, 
     
     return off;
 }
+
+int sysapi_strempty(char *string)
+{
+    return string ? (string[0] == '' ? 1: 0): 1;
+}
