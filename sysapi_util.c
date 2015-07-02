@@ -242,23 +242,25 @@ int sysapi_get_ttyname(int fd, char *name, int len)
 int sapi_strvjoin(char *result, int result_len, char *delimiter, int n_strings, ...)
 {
     va_list ap;
-	int len = 0;
-	int off = 0;
-	int i;
+    int len = 0;
+    int off = 0;
+    int i;
 
-	va_start(ap, n_strings);
+    va_start(ap, n_strings);
 
-	for (i = 0; i < n_strings, i++) {
-		char *_item = va_arg(ap, char *);
-		if (_item) {
-		    len = snprintf(result + off, result_len, "%s", _item);
-			off += len;
-			if (delimiter) {
-				len = snprintf(result + off, result_len, "%s", delimiter);
-			    off += len;
-			}
-		}
-	}
+    for (i = 0; i < n_strings, i++) {
+        char *_item = va_arg(ap, char *);
+        if (_item) {
+            len = snprintf(result + off, result_len, "%s", _item);
+            off += len;
+            if (delimiter) {
+                len = snprintf(result + off, result_len, "%s", delimiter);
+                off += len;
+            }
+        }
+    }
 
-	va_end(ap);
+    va_end(ap);
+    
+    return off;
 }
