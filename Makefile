@@ -1,5 +1,7 @@
 SHELL = /bin/sh
+STRIPCMD = strip
 CC    = gcc
+# Remove -g when releasing the library
 CFLAGS       = -Wall -Wmissing-prototypes -Wstrict-prototypes -fPIC -g
 LDFLAGS = -shared
 
@@ -15,5 +17,7 @@ all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
 	    $(CC) $(CFLAGS) $(LDFLAGS) $(DEBUGFLAGS) -o $(TARGET) $(OBJECTS)
+	    # For the release purposes - no debug, less library size
+	    #$(STRIPCMD) $(TARGET)
 clean:
 	rm -rf *.o ${TARGET}
