@@ -67,6 +67,29 @@ int sapi_get_ifaddr(void *ctx, char *ifname, char *ifaddr)
     return (ret >= 0) ? 0: -1;
 }
 
+int sysapi_get_txqlen(char *ifname)
+{
+    int ret;
+    int fd;
+
+    struct ifreq ifr;
+
+    fd = socket(AF_INET, SOCK_DGRAM, 0);
+    if (fd < 0)
+        return -1;
+
+    memset(&ifr, 0, sizeof(struct ifreq));
+    strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
+
+    ret = ioctl(fd, SIOCGIFTXQLEN, &ifr);
+    if (ret < 0) {
+        close(fd);
+        return -1;
+    }
+
+    return ifr.ifr_qlen;
+}
+
 #define CHECK_LOOPBACK     1
 #define CHECK_BROADCAST    2
 
