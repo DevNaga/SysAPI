@@ -211,6 +211,98 @@ int sysapi_get_symlink_count(char *filename)
     return st.st_nlink;
 }
 
+struct _sysapi_fmap {
+    void *maped_mem;
+    int f_size;
+    int fd;
+};
+
+void *_sysapi_map_file(char *filename, int mode)
+{
+    struct _sysapi_fmap *_sfmap;
+    struct stat _sfs;
+    int ret;
+    int file_mode = PROT_READ;
+
+    _sfmap = calloc(1, sizeof(struct _sysapi_fmap));
+    if (!_sfmap)
+        return NULL;
+
+    _sfmap->fd = open(filename, mode);
+    if (_sfmap->fd < 0) {
+        free(_sfmap);
+        return NULL;
+    }
+
+    ret = stat(filename, &_sfs);
+    if (ret == -1) {
+        close(_sfmap->fd);
+        free(_sfmap);
+        return NULL;
+    }
+
+    _sfmap->f_size = _sfs.st_size;
+
+    if (mode == O_RDWR) {
+        file_mode |= PROT_WRITE;
+    }
+
+    _sfmap->maped_mem = mmap(0, _sfmap->f_size, mode, MAP_SHARED, _sfmap->fd, 0);
+    if (_sfmap->maped_mem == MAP_FAILED) {
+        close(_sfmap->fd);
+        free(_sfmap);
+        return NULL;
+    }
+
+    return _sfmap;
+}
+
+void *sysapi_map_file_rdwr(char *filename)
+{
+    return _sysapi_map_file(filename, O_RDWR);
+}
+
+void *sysapi_map_file_rd(char *filename)
+{
+    return _sysapi_map_file(filename, O_RDONLY);
+}
+
+void sysapi_unmap_file(void *sfmap)
+{
+    struct _sysapi_fmap *_sfmap = sfmap;
+
+    munmap(_sfmap->maped_mem, _sfmap->f_size);
+    close(_sfmap->fd);
+    free(_sfmap);
+}
+
+void _sysapi_unmap_file(void *sfmap, int sync_mode)
+{
+    struct _sysapi_fmap *_sfmap = sfmap;
+
+    msync(_sfmap->maped_mem, _sfmap->f_size, sync_mode);
+    munmap(_sfmap->maped_mem, _sfmap->f_size);
+    close(_sfmap->fd);
+    free(_sfmap);
+}
+
+void sysapi_sync_unmap_file(void *sfmap)
+{
+    _sysapi_unmap_file(sfmap, MS_SYNC);
+}
+
+void sysapi_async_unmap_file(void *sfmap)
+{
+    _sysapi_unmap_file(sfmap, MS_ASYNC);
+}
+
+void *sysapi_get_maped_fdata_ptr(void *sfmap)
+{
+    struct _sysapi_fmap *_sfmap = sfmap;
+
+    return _sfmap->maped_mem;
+}
+
 #ifdef CONFIG_ADVANCED
 // mini lsof command implementer API..
 int sysapi_get_files_inuse(char *progname,
@@ -221,6 +313,7 @@ int sysapi_get_files_inuse(char *progname,
     struct dirent *entry;
     char path[300];
 }
+
 
 struct sysapi_shmsys {
 #define SAPI_SHM_SIZE 1024 * 10
