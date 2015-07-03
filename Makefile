@@ -1,6 +1,6 @@
 SHELL = /bin/sh
 CC    = gcc
-CFLAGS       = -Wall -fPIC -g
+CFLAGS       = -Wall -Wmissing-prototypes -Wstrict-prototypes -fPIC -g
 LDFLAGS = -shared
 
 TARGET  = libsysapi.so
