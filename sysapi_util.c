@@ -346,3 +346,8 @@ int sysapi_find_files_with_ext(char *dir, char *ext,
 
     return ret;
 }
+
+void sysapi_skip_line(FILE *fp)
+{
+    while (fgetc(fp) != '\n');
+}
