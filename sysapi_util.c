@@ -4,6 +4,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <fcntl.h>
+#include "sysapi_fs.h"
 #include "sysapi_util.h"
 
 #define ANSI_COLOR_RED     "\x1B[31m"
@@ -268,4 +269,76 @@ int sapi_strvjoin(char *result, int result_len, char *delimiter, int n_strings, 
 int sysapi_strempty(char *string)
 {
     return string ? (string[0] == "" ? 1: 0): 1;
+}
+
+char *sysapi_strrev(char *string, char *reverse, int rev_len)
+{
+    int len = strlen(string);
+    int i, j;
+
+    for (i = len, j = 0; i > 0, j < rev_len; i--, j++)
+        reverse[j] = string[i];
+
+    reverse[j] = '\0';
+    return reverse;
+}
+
+struct _sysapi_internal_file_ext {
+    char *filext;
+    int found;
+    void (*callback)(char *filename);
+};
+
+static void _sysapi_file_checker(char *filename,
+                          sysapi_file_type ftype,
+                          void *ctx)
+{
+    struct _sysapi_internal_file_ext *__fext = ctx;
+    int result = 0;
+    char *end;
+    char ext[30] = {};
+    char ext_new[30] = {};
+    int i = 0;
+
+    if (ftype == SYSAPI_FILE_TYPE_REGFILE) {
+        end = filename + strlen(filename);
+        while ((*end != '.') && (i < sizeof(ext))) {
+            ext[i] = *end;
+            end++;
+            i++;
+        }
+
+        ext[i] = '\0';
+        sysapi_strrev(ext, ext_new, sizeof(ext_new));
+
+        if (strcmp(ext_new, __fext->filext) == 0) {
+            __fext->found = 1;
+            __fext->callback(filename);
+        }
+    }
+}
+
+int sysapi_find_files_with_ext(char *dir, char *ext,
+                               void (*callback)(char *filename))
+{
+    struct _sysapi_internal_file_ext *_fext;
+    int ret;
+
+    _fext = calloc(1, sizeof(struct _sysapi_internal_file_ext));
+    if (!_fext)
+        return -1;
+
+    _fext->found = 0;
+    _fext->filext = ext;
+    _fext->callback = callback;
+
+    ret = sysapi_dir_read(dir, _sysapi_file_checker, _fext);
+    if (!ret) {
+        if (_fext->found)
+            ret = 0;
+        else
+            ret = -1;
+    }
+
+    return ret;
 }
