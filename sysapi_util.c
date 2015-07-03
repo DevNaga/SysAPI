@@ -248,7 +248,7 @@ int sapi_strvjoin(char *result, int result_len, char *delimiter, int n_strings, 
 
     va_start(ap, n_strings);
 
-    for (i = 0; i < n_strings, i++) {
+    for (i = 0; i < n_strings; i++) {
         char *_item = va_arg(ap, char *);
         if (_item) {
             len = snprintf(result + off, result_len, "%s", _item);
@@ -267,5 +267,5 @@ int sapi_strvjoin(char *result, int result_len, char *delimiter, int n_strings, 
 
 int sysapi_strempty(char *string)
 {
-    return string ? (string[0] == '' ? 1: 0): 1;
+    return string ? (string[0] == "" ? 1: 0): 1;
 }
