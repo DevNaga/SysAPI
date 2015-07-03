@@ -12,6 +12,7 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include <sys/shm.h>
+#include <sys/mman.h>
 
 typedef enum {
 	SYSAPI_FILE_TYPE_REGFILE,
@@ -26,4 +27,3 @@ int sysapi_read_binfile(char *filename,
 						void *app_ctx);
 
 #endif
-
