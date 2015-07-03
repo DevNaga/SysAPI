@@ -7,11 +7,12 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <linux/if.h>
 #include <sys/ioctl.h>
-#include <net/if.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <fcntl.h>
+#include <linux/wireless.h>
 
 struct sapi_lib_context {
     int drv_fd;
@@ -64,6 +65,102 @@ int sapi_get_ifaddr(void *ctx, char *ifname, char *ifaddr)
     strcpy(ifaddr, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
 
     return (ret >= 0) ? 0: -1;
+}
+
+#define CHECK_LOOPBACK     1
+#define CHECK_BROADCAST    2
+
+int _sysapi_ifflags(char *ifname, int flag)
+{
+    int ret;
+    int fd;
+
+    struct ifreq ifr;
+
+    fd = socket(AF_INET, SOCK_DGRAM, 0);
+    if (fd < 0)
+        return -1;
+
+    memset(&ifr, 0, sizeof(struct ifreq));
+    strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
+
+    ret = ioctl(fd, SIOCGIFFLAGS, &ifr);
+    if (ret < 0) {
+        close(fd);
+        return -1;
+    }
+
+    close(fd);
+
+    if (flag == CHECK_LOOPBACK) {
+        return ifr.ifr_flags && IFF_LOOPBACK;
+    } else if (flag == CHECK_BROADCAST) {
+        return ifr.ifr_flags && IFF_BROADCAST;
+    }
+
+    return -1;
+}
+
+int sysapi_is_dev_lo(char *ifname)
+{
+    return _sysapi_ifflags(ifname, CHECK_LOOPBACK);
+}
+
+int sysapi_is_dev_broadcast(char *ifname)
+{
+    return _sysapi_ifflags(ifname, CHECK_BROADCAST);
+}
+
+int sysapi_get_wlan_rssi(char *ifname, int *rss)
+{
+    int ret;
+    int fd;
+
+    fd = socket(AF_INET, SOCK_DGRAM, 0);
+    if (fd < 0)
+        return -1;
+
+    struct iwreq iwr;
+    struct iw_statistics stats;
+
+    memset(&iwr, 0, sizeof(struct iwreq));
+    memset(&stats, 0, sizeof(struct iw_statistics));
+
+    iwr.u.data.pointer = &stats;
+    iwr.u.data.length = sizeof(struct iw_statistics);
+    iwr.u.data.flags = 1;
+
+    strncpy(iwr.ifr_name, ifname, IFNAMSIZ);
+    ret = ioctl(fd, SIOCGIWSTATS, &iwr);
+    if (ret < 0) {
+        close(fd);
+        return -1;
+    }
+
+    *rss = stats.qual.level;
+    close(fd);
+    return 0;
+}
+
+int sysapi_is_wdev(char *ifname)
+{
+    int ret;
+    int fd;
+
+    fd = socket(AF_INET, SOCK_DGRAM, 0);
+    if (fd < 0)
+        return 0;
+
+    struct iwreq iwr;
+    memset(&iwr, 0, sizeof(struct iwreq));
+    strncpy(iwr.ifr_name, ifname, sizeof(iwr.ifr_name));
+    ret = ioctl(fd, SIOCGIWNAME, &iwr);
+    if (ret < 0) {
+        close(fd);
+        return 0;
+    }
+
+    return 1;
 }
 
 int sysapi_get_macaddr(char *ifname, uint8_t *macaddr)
