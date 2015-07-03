@@ -15,7 +15,7 @@
 #define ANSI_COLOR_CYAN    "\x1B[36m"
 #define ANSI_COLOR_RESET   "\033[0m"
 
-void sysapi_print_in_red(char *msg, va_list ap)
+static void sysapi_print_in_red(char *msg, va_list ap)
 {
     char str[1024];
     int len;
@@ -25,7 +25,7 @@ void sysapi_print_in_red(char *msg, va_list ap)
     fprintf(stderr, ANSI_COLOR_RED"%s"ANSI_COLOR_RESET, str);
 }
 
-void sysapi_print_in_yellow(char *msg, va_list ap)
+static void sysapi_print_in_yellow(char *msg, va_list ap)
 {
     char str[1024];
     int len;
@@ -35,7 +35,7 @@ void sysapi_print_in_yellow(char *msg, va_list ap)
     fprintf(stdout, ANSI_COLOR_YELLOW"%s"ANSI_COLOR_RESET, str);
 }
 
-void sysapi_print_in_green(char *msg, va_list ap)
+static void sysapi_print_in_green(char *msg, va_list ap)
 {
     char str[1024];
     int len;
@@ -45,7 +45,7 @@ void sysapi_print_in_green(char *msg, va_list ap)
     fprintf(stdout, ANSI_COLOR_GREEN"%s"ANSI_COLOR_RESET, str);
 }
 
-void sysapi_print_in_norm(char *msg, va_list ap)
+static void sysapi_print_in_norm(char *msg, va_list ap)
 {
     char str[1024];
     int len;
@@ -67,8 +67,12 @@ void sysapi_printf(int level, char *msg, ...)
         {SYSAPI_LEVEL_INFO, sysapi_print_in_green},
         {SYSAPI_LEVEL_NORM, sysapi_print_in_norm},
     };
+    int level_printer_size = sizeof(printers) / sizeof(printers[0]);
 
     va_start(ap, msg);
+
+    if (level < 0 || level > level_printer_size)
+        level = SYSAPI_LEVEL_NORM + 1;
 
     printers[level - 1].printer(msg, ap);
 
