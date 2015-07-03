@@ -403,7 +403,7 @@ err_connect:
     return -1;
 }
 
-int _sapi_inet_tcp_transmit(int sock, void *data, int datalen)
+static int _sapi_inet_tcp_transmit(int sock, void *data, int datalen)
 {
     return send(sock, (void *)data, datalen, 0);
 }
@@ -418,7 +418,7 @@ int sapi_inet_tcp_transmit(int sock, void *data, int datalen)
     return _sapi_inet_tcp_transmit(sock, data, datalen);
 }
 
-int _sapi_inet_tcp_receive(int sock, void *data, int datalen)
+static int _sapi_inet_tcp_receive(int sock, void *data, int datalen)
 {
     return recv(sock, (void *)data, datalen, 0);
 }
@@ -597,7 +597,7 @@ int sapi_sock_reset_keepalive(int sock)
     return __sapi_sock_reset_optint(sock, SOL_SOCKET, SO_KEEPALIVE);
 }
 
-int __sapi_get_sock_type(int sock, char *socket_type)
+static int __sapi_get_sock_type(int sock, char *socket_type)
 {
     char *socktypes[] = {
         "tcp",
