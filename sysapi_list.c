@@ -1,7 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
+#include "sysapi_list.h"
 
 struct sapi_list {
     void *data;
@@ -46,6 +43,8 @@ int sapi_list_add_tail(void *ctx, void *data)
         list_ctx->tail->next = list;
         list_ctx->tail = list;
     }
+
+    ret = 0;
     return ret;
 }
 

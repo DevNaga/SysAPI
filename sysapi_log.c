@@ -1,4 +1,4 @@
-#include "sysapi_net.h"
+#include "sysapi_log.h"
 
 int sapi_open_syslog()
 {

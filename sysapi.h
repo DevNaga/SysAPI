@@ -23,5 +23,6 @@
 #include "sysapi_dllist.h"
 #include "sysapi_thpool.h"
 #include "sysapi_gc.h"
+#include "sysapi_log.h"
 
 #endif

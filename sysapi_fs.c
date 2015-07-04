@@ -97,7 +97,7 @@ int sysapi_create_pidfile(char *filename)
     write(fd, buff, strlen(buff));
 //    unlink(filename);
     close(fd);
-    
+
     return 0;
 }
 
