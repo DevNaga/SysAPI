@@ -1,20 +1,9 @@
 #include "sysapi_list.h"
 #include "sysapi_util.h"
 #include "sysapi_gc.h"
+#include "sysapi_gc_i.h"
 
-struct _gc_mem_identifer {
-    int line;
-    const char *func;
-    bool scoped;
-    void *memory;
-};
-
-struct _gc_struct {
-    void *gc_list;
-    void *gc_scoped_list;
-};
-
-void *_sapi_alloc(void *__ref, int clear, int scoped, int size, const char *func, int line)
+static void *_sapi_alloc(void *__ref, int clear, int scoped, int size, const char *func, int line)
 {
     struct _gc_struct *ctx = __ref;
 
@@ -51,7 +40,7 @@ void *sapi_calloc(void *__ref, int size, const char *func, int line)
     return _sapi_alloc(__ref, true, false, size, func, line);
 }
 
-void *sapi_scope_init(void *__ref)
+static void *sapi_scope_init(void *__ref)
 {
     struct _gc_struct *ref = __ref;
 
@@ -78,7 +67,7 @@ void *sapi_scoped_calloc(void *__ref, int size, const char *func, int line)
     return _sapi_alloc(__ref, true, true, size, func, line);
 }
 
-int _sapi_gc_dump_scoped_heap(void *ref, void *data)
+static int _sapi_gc_dump_scoped_heap(void *ref, void *data)
 {
     struct _gc_mem_identifer *id = data;
 
@@ -117,7 +106,7 @@ void *sapi_gc_startup()
     return ref;
 }
 
-int _sapi_gc_dump_heap(void *ref, void *data)
+static int _sapi_gc_dump_heap(void *ref, void *data)
 {
     struct _gc_mem_identifer *id = data;
 
@@ -140,3 +129,4 @@ void sapi_gc_cleanup(void *__ref)
     sapi_list_deinit(ref->gc_list, ref, _sapi_gc_dump_heap);
     free(ref);
 }
+

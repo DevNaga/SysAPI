@@ -19,7 +19,7 @@ typedef enum {
 	SYSAPI_FILE_TYPE_DIRECT,
 } sysapi_file_type;
 
-int sysapi_read_dir(char *dirpath,
+int sysapi_dir_read(char *dirpath,
 	                void (*callback)(char *filename, sysapi_file_type type, void *app_cb),
 					void *app_cb);
 int sysapi_read_binfile(char *filename,

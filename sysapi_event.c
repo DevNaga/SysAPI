@@ -1,45 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
-#include <signal.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <sys/select.h>
-#include <pthread.h>
-
-struct sapi_read_evthread {
-    int sock;
-    pthread_cond_t read_cond;
-    pthread_mutex_t cond_mutex;
-    void *app_cb;
-    void (*sapi_read_event_cb) (void *);
-    void *priv;
-};
-
-struct sapi_read_evlist {
-    pthread_t t;
-    struct sapi_read_evthread *thread_data;
-    struct sapi_read_evlist *next;
-};
-
-struct sapi_signal_evlist {
-    int signal_no;
-    void *app_cb;
-    void (*sapi_signal_evcallback)(void *app_cb);
-    struct sapi_signal_evlist *next;
-};
-
-struct sapi_event_data {
-    fd_set allfd;
-    int maxfd;
-    struct sapi_read_evlist *head;
-    struct sapi_read_evlist *tail;
-    struct sapi_signal_evlist *s_head;
-    struct sapi_signal_evlist *s_tail;
-};
+#include "sysapi_event.h"
+#include "sysapi_event_i.h"
 
 void *sapi_event_system_init(void)
 {

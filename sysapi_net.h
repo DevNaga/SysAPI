@@ -5,6 +5,10 @@ int sapi_inet_tcp_server_create(char *ip, int port, int n_conns);
 
 int sapi_inet_tcp_client_create(char *ip, int port);
 
+int sapi_inet_tcp_transmit(int sock, void *data, int datalen);
+
+int sapi_inet_tcp_receive(int sock, void *data, int datalen);
+
 int sapi_unix_tcp_server_create(char *path, int n_conns);
 
 int sapi_unix_tcp_client_create(char *path);
@@ -12,6 +16,10 @@ int sapi_unix_tcp_client_create(char *path);
 void sapi_unix_tcp_server_destroy(int sock);
 
 void sapi_unix_tcp_client_destroy(int sock);
+
+int sapi_unix_tcp_transmit(int sock, void *data, int datalen);
+
+int sapi_unix_tcp_receive(int sock, void *data, int datalen);
 
 void sapi_inet_tcp_server_destroy(int sock);
 

@@ -65,4 +65,17 @@ int sysapi_get_rand(void);
 // generate a random number with in the range 0 - range.
 int sysapi_get_rand_range(int range);
 
+int sysapi_create_lockfile(char *lfile);
+
+int sapi_strvjoin(char *result,
+		          int result_len,
+				  char *delimiter, int n_strings, ...);
+
+int sysapi_strempty(char *string);
+
+char *sysapi_strrev(char *string, char *reverse, int rev_len);
+
+int sysapi_find_files_with_ext(char *dir, char *ext,
+                               void (*callback)(char *filename));
+
 #endif

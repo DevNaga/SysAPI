@@ -3,7 +3,7 @@
 
 #include "sysapi_net.h"
 
-int sapi_open_syslog();
+int sapi_open_syslog(void);
 
 int sapi_write_syslog_msg(int syslog_sock, char *msg, int len);
 

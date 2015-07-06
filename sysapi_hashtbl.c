@@ -1,7 +1,4 @@
-#include <stdio.h>
-#include <stdint.h>
-#include <string.h>
-#include <stdlib.h>
+#include "sysapi_hashtbl.h"
 
 #define MAX_HASHES 200
 

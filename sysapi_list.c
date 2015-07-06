@@ -1,15 +1,24 @@
 #include "sysapi_list.h"
 
-struct sapi_list {
-    void *data;
-    struct sapi_list *next;
-};
-
 struct sapi_list_ctx {
     int n_items;
     struct sapi_list *next_iter;
     struct sapi_list *head, *tail;
 };
+
+void *sapi_list_first_elem(void *ctx)
+{
+    struct sapi_list_ctx *list_ctx = ctx;
+
+    return list_ctx->head->data;
+}
+
+void *sapi_list_last_elem(void *ctx)
+{
+    struct sapi_list_ctx *list_ctx = ctx;
+
+    return list_ctx->tail->data;
+}
 
 void *sapi_list_init(void)
 {
@@ -48,19 +57,16 @@ int sapi_list_add_tail(void *ctx, void *data)
     return ret;
 }
 
-int sapi_list_get_data_iter(void *ctx, int (*iter_func)(void *ctx, void *data))
+int sapi_list_get_data_iter(void *ctx, void *data, int (*iter_func)(void *ctx, void *, void *))
 {
     int ret;
     struct sapi_list_ctx *list_ctx = ctx;
     struct sapi_list *list;
 
     ret = -1;
-    for (list = list_ctx->head; list; list = list->next) {
+    for (list = list_ctx->head; list; list = list->next)
         if (iter_func)
-            iter_func(list_ctx, list->data);
-        else
-            printf("missing iterator function\n");
-    }
+            iter_func(list_ctx, data, list->data);
 
     ret = 0;
     return ret;
@@ -74,6 +80,54 @@ void* sapi_list_get_next_data(void *ctx)
     list_ctx->next_iter = list_ctx->next_iter->next;
     return list->data;
 }
+
+int sapi_list_compare_delete(void *ctx, void *data, int (*compare)(void *, void *, void *))
+{
+    int ret;
+    struct sapi_list_ctx *list_ctx = ctx;
+    struct sapi_list *prev, *cur;
+
+    cur = list_ctx->head;
+    prev = cur;
+
+    ret = -1;
+    if (cur->data == data) {
+        if (list_ctx->tail == cur) {
+            list_ctx->tail = NULL;
+            list_ctx->head = NULL;
+            if (compare) {
+                ret = compare(list_ctx, data, cur->data);
+                if (ret)
+                    free(cur);
+            }
+        } else {
+            list_ctx->head = cur->next;
+            if (compare) {
+                ret = compare(list_ctx, data, cur->data);
+                if (ret)
+                    free(cur);
+            }
+        }
+        return 0;
+    }
+
+    while (cur) {
+        if (cur->data == data) {
+            prev->next = cur->next;
+            if (compare) {
+                ret = compare(list_ctx, data, cur->data);
+                if (ret)
+                    free(cur);
+            }
+            break;
+        }
+        prev = cur;
+        cur = cur->next;
+    }
+
+    return ret;
+}
+
 
 int sapi_list_delete(void *ctx, int (*delete)(void *, void *), void *data)
 {
@@ -104,7 +158,9 @@ int sapi_list_delete(void *ctx, int (*delete)(void *, void *), void *data)
     while (cur) {
         if (cur->data == data) {
             prev->next = cur->next;
-            delete(list_ctx, cur->data);
+            if (delete)
+                delete(list_ctx, cur->data);
+            free(cur);
             ret = 0;
             break;
         }

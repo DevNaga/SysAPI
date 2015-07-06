@@ -1,13 +1,5 @@
-#include <stdio.h>
-#include <stdint.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdlib.h>
-
-struct csv_coldata {
-    int col;
-    char *data;
-};
+#include "sysapi_csv.h"
+#include "sysapi_csv_i.h"
 
 int sysapi_get_csvcols(char *csvline)
 {
@@ -86,3 +78,4 @@ int sysapi_get_csvline(char *filename,
 
     return 0;
 }
+

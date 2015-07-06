@@ -283,6 +283,9 @@ char *sysapi_strrev(char *string, char *reverse, int rev_len)
     for (i = len, j = 0; i > 0, j < rev_len; i--, j++)
         reverse[j] = string[i];
 
+    if (j >= rev_len)
+        j = rev_len -1;
+
     reverse[j] = '\0';
     return reverse;
 }
@@ -344,6 +347,8 @@ int sysapi_find_files_with_ext(char *dir, char *ext,
             ret = -1;
     }
 
+    free(_fext);
+
     return ret;
 }
 
@@ -351,3 +356,26 @@ void sysapi_skip_line(FILE *fp)
 {
     while (fgetc(fp) != '\n');
 }
+
+int sysapi_getdelim(char *line, int size, char delim, FILE *fp)
+{
+    int c;
+    int char_count = 0;
+
+    while (1) {
+        c = fgetc(fp);
+        if ((c != EOF) && (c != delim)) {
+            if (char_count < size)
+                line[char_count] = c;
+            else
+                line[char_count] = '\0';
+            char_count++;
+        } else {
+            line[char_count] = '\0';
+            break;
+        }
+    }
+
+    return char_count;
+}
+

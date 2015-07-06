@@ -6,11 +6,18 @@
 #include <stdint.h>
 #include <string.h>
 
+struct sapi_list {
+    void *data;
+    struct sapi_list *next;
+};
+
+struct sapi_list_ctx;
+
 void *sapi_list_init(void);
 
 int sapi_list_add_tail(void *ctx, void *data);
 
-int sapi_list_get_data_iter(void *ctx, int (*iter_func)(void *ctx, void *data));
+int sapi_list_get_data_iter(void *ctx, void *data, int (*iter_func)(void *ctx, void *, void *));
 
 void* sapi_list_get_next_data(void *ctx);
 

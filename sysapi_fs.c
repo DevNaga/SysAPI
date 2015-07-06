@@ -113,6 +113,17 @@ int sysapi_touch(char *filename)
     return 0;
 }
 
+int sysapi_makedir(char *dirname)
+{
+    int ret;
+
+    ret = mkdir(dirname, S_IRWXU);
+    if (ret < 0)
+        return -1;
+
+    return 0;
+}
+
 int sysapi_dir_walk(char *dirpath,
                     void (*callback)(char *parent, sysapi_file_type file_type, char *filename, void *app_ctx),
                     void *app_ctx)
