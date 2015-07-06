@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "sysapi_memact.h"
 
 struct sysapi_memact_data {
     int memory_limit;

@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void *sysapi_queue_init();
+void *sysapi_queue_init(void);
 
 int sysapi_queue_enque(void *data, void *qptr);
 

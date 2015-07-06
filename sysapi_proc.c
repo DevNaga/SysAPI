@@ -245,7 +245,7 @@ int sysapi_get_kernel_meminfo(struct sysapi_kernel_meminfo *meminfo)
     return 0;
 }
 
-void _sysapi_parse_crypto_data(char *filebuf, char *dest)
+UNUSED static void _sysapi_parse_crypto_data(char *filebuf, char *dest)
 {
     int i = 0, j = 0;
 
@@ -266,7 +266,8 @@ void _sysapi_parse_crypto_data(char *filebuf, char *dest)
     dest[j] = '\0';
 }
 
-BROKEN int sysapi_get_kernel_crypto(struct sysapi_sys_crypto_info *crypto)
+#ifdef CONFIG_INCLUDE_BROKEN_IN_LIB
+BROKEN UNUSED int sysapi_get_kernel_crypto(struct sysapi_sys_crypto_info *crypto)
 {
 #define CRYPTO_NAME "name"
 #define CRYPTO_DRIVER "driver"
@@ -386,6 +387,7 @@ BROKEN int sysapi_get_kernel_crypto(struct sysapi_sys_crypto_info *crypto)
 
     return 0;
 }
+#endif
 
 
 #ifdef CONFIG_SYSAPI_PROC_TEST

@@ -1,11 +1,11 @@
 #ifndef __SYSAPI_TIME_H__
 #define __SYSAPI_TIME_H__
 
-long sapi_get_time_sec();
+long sapi_get_time_sec(void);
 
-uint64_t sapi_get_time_msec();
+uint64_t sapi_get_time_msec(void);
 
-int sapi_is_dst_active();
+int sapi_is_dst_active(void);
 
 struct sapi_time {
 	int sec;

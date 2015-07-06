@@ -11,6 +11,8 @@
 #define SYSAPI_LEVEL_WARN 2
 #define SYSAPI_LEVEL_ERR  1
 
+void sysapi_printf(int level, char *msg, ...);
+
 // log the informational message
 // this will show up green on the console
 #define sysapi_print_info(msg, ...) sysapi_printf(SYSAPI_LEVEL_INFO, msg " "__VA_ARGS__)
@@ -77,5 +79,9 @@ char *sysapi_strrev(char *string, char *reverse, int rev_len);
 
 int sysapi_find_files_with_ext(char *dir, char *ext,
                                void (*callback)(char *filename));
+
+void sysapi_skip_line(FILE *fp);
+
+int sysapi_getdelim(char *line, int size, char delim, FILE *fp);
 
 #endif

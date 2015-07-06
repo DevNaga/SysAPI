@@ -25,4 +25,11 @@ int sapi_list_delete(void *ctx, int (*delete)(void *, void *), void *data);
 
 int sapi_list_deinit(void *ctx, void *magic, int (*freefunc)(void *, void *));
 
+void *sapi_list_first_elem(void *ctx);
+
+void *sapi_list_last_elem(void *ctx);
+
+int sapi_list_compare_delete(void *ctx, void *data,
+                             int (*compare)(void *, void *, void *));
+
 #endif

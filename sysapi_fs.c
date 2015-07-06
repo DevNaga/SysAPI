@@ -228,7 +228,7 @@ struct _sysapi_fmap {
     int fd;
 };
 
-void *_sysapi_map_file(char *filename, int mode)
+static void *_sysapi_map_file(char *filename, int mode)
 {
     struct _sysapi_fmap *_sfmap;
     struct stat _sfs;
@@ -287,7 +287,7 @@ void sysapi_unmap_file(void *sfmap)
     free(_sfmap);
 }
 
-void _sysapi_unmap_file(void *sfmap, int sync_mode)
+static void _sysapi_unmap_file(void *sfmap, int sync_mode)
 {
     struct _sysapi_fmap *_sfmap = sfmap;
 

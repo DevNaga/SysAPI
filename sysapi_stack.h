@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 
-void *sysapi_stack_init();
+void *sysapi_stack_init(void);
 
 int sysapi_stack_push(void *elem, void *sptr);
 

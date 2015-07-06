@@ -13,6 +13,7 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <linux/wireless.h>
+#include "sysapi_net.h"
 
 struct sapi_lib_context {
     int drv_fd;
@@ -93,7 +94,7 @@ int sysapi_get_txqlen(char *ifname)
 #define CHECK_LOOPBACK     1
 #define CHECK_BROADCAST    2
 
-int _sysapi_ifflags(char *ifname, int flag)
+static int _sysapi_ifflags(char *ifname, int flag)
 {
     int ret;
     int fd;

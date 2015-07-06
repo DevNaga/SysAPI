@@ -272,7 +272,7 @@ int sapi_strvjoin(char *result, int result_len, char *delimiter, int n_strings, 
 
 int sysapi_strempty(char *string)
 {
-    return string ? (string[0] == "" ? 1: 0): 1;
+    return string ? (!strcmp(string, "") ? 1: 0): 1;
 }
 
 char *sysapi_strrev(char *string, char *reverse, int rev_len)
@@ -280,7 +280,7 @@ char *sysapi_strrev(char *string, char *reverse, int rev_len)
     int len = strlen(string);
     int i, j;
 
-    for (i = len, j = 0; i > 0, j < rev_len; i--, j++)
+    for (i = len, j = 0; i > 0 && j < rev_len; i--, j++)
         reverse[j] = string[i];
 
     if (j >= rev_len)
@@ -301,7 +301,6 @@ static void _sysapi_file_checker(char *filename,
                           void *ctx)
 {
     struct _sysapi_internal_file_ext *__fext = ctx;
-    int result = 0;
     char *end;
     char ext[30] = {};
     char ext_new[30] = {};

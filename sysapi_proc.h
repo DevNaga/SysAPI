@@ -94,5 +94,15 @@ struct sysapi_sys_crypto_info {
 	struct sysapi_sys_crypto_info *next;
 };
 
+int sysapi_get_kernel_cmdline(char *cmdline);
+
+int sysapi_proc_get_hostname(char *hostname, int len);
+
+int sysapi_proc_set_hostname(char *hostname, int len);
+
+int sysapi_get_kernel_release(char *release, int len);
+
+int sysapi_get_kernel_meminfo(struct sysapi_kernel_meminfo *meminfo);
+
 #endif
 
