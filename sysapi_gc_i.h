@@ -1,3 +1,5 @@
+#ifndef __SYSAPI_GC_I_H__
+#define __SYSAPI_GC_I_H__
 
 struct _gc_mem_identifer {
     int line;
@@ -21,3 +23,6 @@ static void *_sapi_alloc(void *__ref,
 static void *sapi_scope_init(void *__ref);
 
 static int _sapi_gc_dump_heap(void *ref, void *data);
+
+#endif
+
