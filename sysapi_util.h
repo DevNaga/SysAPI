@@ -84,4 +84,10 @@ void sysapi_skip_line(FILE *fp);
 
 int sysapi_getdelim(char *line, int size, char delim, FILE *fp);
 
+sigset_t sysapi_init_siglock(int *signal_list, int signal_list_len);
+
+int sysapi_signal_lock(sigset_t *set);
+
+int sysapi_signal_unlock(sigset_t *set);
+
 #endif
