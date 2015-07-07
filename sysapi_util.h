@@ -5,6 +5,7 @@
 #include <sys/time.h>
 #include <time.h>
 #include <stdlib.h>
+#include <signal.h>
 
 #define SYSAPI_LEVEL_NORM 4
 #define SYSAPI_LEVEL_INFO 3
