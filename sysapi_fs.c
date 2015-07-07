@@ -101,6 +101,11 @@ int sysapi_create_pidfile(char *filename)
     return 0;
 }
 
+int sysapi_unlink_file(char *filename)
+{
+    return unlink(filename);
+}
+
 int sysapi_touch(char *filename)
 {
     int fd;
