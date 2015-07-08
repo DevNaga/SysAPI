@@ -6,7 +6,6 @@ struct worker_queue {
     pthread_cond_t cond;
     pthread_attr_t attr;
     void (*func)(void *priv);
-    int start;
     int done;
     void *priv;
     struct worker_queue *next;
@@ -21,13 +20,14 @@ static void *__sapi_worker_thread(void *work)
 {
     struct worker_queue *mywork = work;
     
-    mywork->start = 1;
+
+    pthread_mutex_lock(&mywork->mutex);
+    pthread_cond_signal(&mywork->cond);
+    pthread_mutex_unlock(&mywork->mutex);
 
     for (; ;) {
         pthread_mutex_lock(&mywork->mutex);
-        printf("--> %p\n", mywork);
         pthread_cond_wait(&mywork->cond, &mywork->mutex);
-        printf("unlock %p\n", mywork);
         if (!mywork->done) {
             mywork->func(mywork->priv);
             mywork->done = 1;
@@ -79,8 +79,10 @@ void *sapi_worker_create(void (*func)(void *priv), void *usr_priv)
         free(queue);
         return NULL;
     }
-    while (queue->start == 0);
-    
+    pthread_mutex_lock(&queue->mutex);
+    pthread_cond_wait(&queue->cond, &queue->mutex);
+    pthread_mutex_unlock(&queue->mutex);
+
     return work;
 }
 
@@ -119,8 +121,6 @@ int sapi_queue_work(void *work_priv, void (*func)(void *priv), void *usr_priv)
         free(queue);
         return -1;
     }
-    while (queue->start == 0);
-
     return 0;
 }
 
