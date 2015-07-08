@@ -19,6 +19,7 @@ sysfs_tests=[
         ]
 
 sysutil_tests=[
+        "sudo ./test_sysutil"
         ]
 
 command_exec=[
