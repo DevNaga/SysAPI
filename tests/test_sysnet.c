@@ -12,8 +12,8 @@ int get_mac_addr(char *ifname)
     ret = sapi_get_ifaddr(libctx, ifname, ifaddr);
     if (ret == 0) {
         printf("addr : %s\n", ifaddr);
-    } else {
-        printf("get mac test fails\n");
+    } else if (ret == -LSAPI_INET_ADDR_NOTAVAIL) {
+        printf("get ipaddr test fails: no address\n");
     }
 
     return ret;
@@ -22,6 +22,11 @@ int get_mac_addr(char *ifname)
 int get_mtu()
 {
     int mtu = sysapi_get_mtu("enp0s3");
+    if (mtu < 0) {
+        printf("get mtu test fails\n");
+        return -1;
+    }
+
     printf("mtu %d\n", mtu);
 
     return 0;
@@ -62,6 +67,9 @@ int main(int argc, char *argv[])
     int mtu = 0;
     int nm = 0;
 
+    if (argc == 1)
+        return -1;
+
     while ((opt = getopt(argc, argv, "m:cMn")) != -1) {
         switch (opt) {
             case 'm':
@@ -100,4 +108,3 @@ int main(int argc, char *argv[])
 
     return ret;
 }
-
