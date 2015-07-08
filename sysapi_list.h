@@ -32,4 +32,14 @@ void *sapi_list_last_elem(void *ctx);
 int sapi_list_compare_delete(void *ctx, void *data,
                              int (*compare)(void *, void *, void *));
 
+struct sapi_list *sapi_list_get_head(void *ctx);
+
+struct sapi_list *sapi_list_get_tail(void *ctx);
+
+#define sapi_list_item_data(__list) (__list->data)
+
+#define sapi_list_foreach(__ctx, __iter)                           \
+    __iter = sapi_list_get_head(__ctx);                            \
+    for (__iter; __iter; __iter = __iter->next)                    \
+
 #endif
