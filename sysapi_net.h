@@ -5,6 +5,10 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+typedef enum {
+	LSAPI_INET_ADDR_NOTAVAIL = 1,
+} sysapi_net_errcodes;
+
 int sapi_inet_tcp_server_create(char *ip, int port, int n_conns);
 
 int sapi_inet_tcp_client_create(char *ip, int port);
