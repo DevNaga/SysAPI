@@ -19,6 +19,7 @@
 #include "sysapi_proc.h"
 #include "sysapi_memact.h"
 #include "sysapi_cirque.h"
+#include "sysapi_list.h"
 #include "sysapi_util.h"
 #include "sysapi_dllist.h"
 #include "sysapi_thpool.h"

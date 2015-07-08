@@ -394,9 +394,18 @@ sigset_t sysapi_init_siglock(int *signal_list, int signal_list_len)
 int sysapi_signal_lock(sigset_t *sigset)
 {
     sigprocmask(SIG_BLOCK, sigset, NULL);
+    return 0;
 }
 
 int sysapi_signal_unlock(sigset_t *sigset)
 {
     sigprocmask(SIG_UNBLOCK, sigset, NULL);
+    return 0;
+}
+
+/// XXX: using of signal() API is outdated... should not be used
+int sysapi_install_sighandler(int signal_no, void (*signal_callback)(int signal_no))
+{
+    signal(SIGINT, signal_callback);
+    return 0;
 }

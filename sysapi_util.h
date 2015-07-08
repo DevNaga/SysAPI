@@ -91,4 +91,7 @@ int sysapi_signal_lock(sigset_t *set);
 
 int sysapi_signal_unlock(sigset_t *set);
 
+int sysapi_install_sighandler(int signal_no, void (*signal_callback)(int signal_no));
+
 #endif
+
