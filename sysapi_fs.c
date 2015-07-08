@@ -101,6 +101,11 @@ int sysapi_create_pidfile(char *filename)
     return 0;
 }
 
+int sysapi_unlink_file(char *filename)
+{
+    return unlink(filename);
+}
+
 int sysapi_touch(char *filename)
 {
     int fd;
@@ -111,6 +116,23 @@ int sysapi_touch(char *filename)
 
     close(fd);
     return 0;
+}
+
+int sysapi_truncate_file(char *filename, int filesize)
+{
+    return truncate(filename, filesize);
+}
+
+int sysapi_new_truncate_file(char *filename, int filesize)
+{
+    if (sysapi_touch(filename) == 0)
+        return sysapi_truncate_file(filename, filesize);
+    return -1;
+}
+
+int sysapi_untouch(char *filename)
+{
+    sysapi_unlink_file(filename);
 }
 
 int sysapi_makedir(char *dirname)
@@ -295,6 +317,23 @@ static void _sysapi_unmap_file(void *sfmap, int sync_mode)
     munmap(_sfmap->maped_mem, _sfmap->f_size);
     close(_sfmap->fd);
     free(_sfmap);
+}
+
+static void _sysapi_sync_file(void *sfmap, int fsize, int sync_mode)
+{
+    struct _sysapi_fmap *_sfmap = sfmap;
+
+    msync(_sfmap->maped_mem, fsize, sync_mode);
+}
+
+void sysapi_async_file(void *sfmap, int fsize)
+{
+    _sysapi_sync_file(sfmap, fsize, MS_ASYNC);
+}
+
+void sysapi_sync_file(void *sfmap, int fsize)
+{
+    _sysapi_sync_file(sfmap, fsize, MS_SYNC);
 }
 
 void sysapi_sync_unmap_file(void *sfmap)
