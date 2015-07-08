@@ -53,6 +53,40 @@ err_queue_alloc:
     return queue;
 }
 
+void* sysapi_cirque_resize(int newqueue, void *libctx)
+{
+    struct _sysapi_cirque *queue = libctx;
+    int new_qlen = 0;
+    int i;
+
+    new_qlen = newqueue - queue->len;
+    if (new_qlen <= 0)
+        return queue;
+
+    for (i = 0; i < new_qlen; i++) {
+        struct queue_buf *t = calloc(1, sizeof(struct queue_buf));
+
+        if (!t)
+            return queue;
+
+        t->allocated = 0;
+
+        queue->tail->next = t;
+        queue->tail = t;
+    }
+    
+    queue->len += new_qlen;
+
+    return queue;
+}
+
+int sysapi_get_qlen(void *libctx)
+{
+    struct _sysapi_cirque *queue = libctx;
+
+    return queue->len;
+}
+
 void sysapi_cirque_add(void *libctx, void *data)
 {
     struct _sysapi_cirque *queue = libctx;
@@ -89,6 +123,23 @@ void sysapi_cirque_for_each(void *libctx, void *cbdata, void (*cb_caller)(void *
     }
 }
 
+int sysapi_cirque_mark_node_empty(void *libctx, void *data)
+{
+    struct _sysapi_cirque *queue = libctx;
+    struct queue_buf *buf = queue->head;
+
+    while (buf) {
+        if (buf->allocated)
+            if (buf->data == data) {
+                buf->allocated = 0;
+                return 0;
+            }
+        buf = buf->next;
+    }
+
+    return -1;
+}
+
 void sysapi_cirque_deinit(void *libctx)
 {
     struct _sysapi_cirque *queue = libctx;
@@ -100,5 +151,6 @@ void sysapi_cirque_deinit(void *libctx)
         buf = buf->next;
         free(prev_buf);
     }
-}
 
+    free(queue);
+}
