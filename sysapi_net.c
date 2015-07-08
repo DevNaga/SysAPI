@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <string.h>
+#include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <errno.h>
 #include <unistd.h>
 #include <sys/un.h>
 #include <sys/socket.h>
@@ -60,8 +62,12 @@ int sapi_get_ifaddr(void *ctx, char *ifname, char *ifaddr)
     strncpy(ifr.ifr_name, ifname, strlen(ifname) + 1);
 
     ret = ioctl(libctx->drv_fd,  SIOCGIFADDR, &ifr);
-    if (ret < 0)
+    if (ret < 0) {
+        if (errno == EADDRNOTAVAIL) {
+            return -LSAPI_INET_ADDR_NOTAVAIL;
+        }
         return ret;
+    }
 
     strcpy(ifaddr, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
 
@@ -268,6 +274,7 @@ int sysapi_get_netmask(char *ifname, char *nmask)
 
 int sapi_unix_tcp_server_create(char *path, int n_conns)
 {
+    int len;
     int ret;
 
     struct sockaddr_un serv = {
@@ -285,7 +292,13 @@ int sapi_unix_tcp_server_create(char *path, int n_conns)
     if (sock < 0)
         return -1;
 
-    ret = bind(sock, (struct sockaddr *)&serv, sizeof(serv));
+    len = strlen(path) + 1;
+    if (len >= sizeof(serv.sun_path) - 1) {
+        close(sock);
+        goto err_bind;
+    }
+
+    ret = bind(sock, (struct sockaddr *)&serv, offsetof(struct sockaddr_un, sun_path) + len);
     if (ret < 0)
         goto err_bind;
 
@@ -359,7 +372,7 @@ int sapi_inet_tcp_server_create(char *ip, int port, int n_conns)
     ret = setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
     if (ret < 0)
         goto err_sockopt;
-    
+
     ret = bind(sock, (struct sockaddr *)&serv, sizeof(serv));
     if (ret < 0)
         goto err_bind;
@@ -456,7 +469,7 @@ int sapi_inet_udp_server_create(char *ip_addr, int port)
     serv.sin_port = htons(port);
 
     int opt = 1;
-    
+
     sock = socket(AF_INET, SOCK_DGRAM, 0);
     if (sock < 0)
         return -1;
@@ -464,7 +477,7 @@ int sapi_inet_udp_server_create(char *ip_addr, int port)
     ret = setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
     if (ret < 0)
         goto err_sockopt;
-    
+
     ret = bind(sock, (struct sockaddr *)&serv, sizeof(serv));
     if (ret < 0)
         goto err_sock;
@@ -485,15 +498,15 @@ void sapi_inet_udp_server_destroy(int sock)
 int sapi_inet_udp_client_create(char *ip_addr, int port, struct sockaddr_in *serv)
 {
     int sock;
-    
+
     serv->sin_family = AF_INET;
     serv->sin_addr.s_addr = inet_addr(ip_addr);
     serv->sin_port = htons(port);
-    
+
     sock = socket(AF_INET, SOCK_DGRAM, 0);
     if (sock < 0)
         return -1;
-    
+
     return sock;
 }
 
@@ -547,14 +560,14 @@ int sapi_set_max_conn(int conn)
 static int __sapi_sock_set_optint(int sock, int so_lvl, int opt_name)
 {
     int opt = 1;
-    
+
     return setsockopt(sock, so_lvl, opt_name, &opt, sizeof(opt));
 }
 
 static int __sapi_sock_reset_optint(int sock, int so_lvl, int opt_name)
 {
     int opt = 0;
-    
+
     return setsockopt(sock, so_lvl, opt_name, &opt, sizeof(opt));
 }
 
@@ -605,20 +618,20 @@ static int __sapi_get_sock_type(int sock, char *socket_type)
         "udp",
         "unknown",
     };
-    
+
     int type = -1;
     int typelen = sizeof(type);
     int ret;
-    
+
     ret = getsockopt(sock, SOL_SOCKET, SO_TYPE, &type, &typelen);
     if (ret < 0) {
         return -1;
     }
-    
+
     if (type > sizeof(socktypes) / sizeof(socktypes[0])) {
         return -1;
     }
-    
+
     socket_type = socktypes[type - 1];
     return 0;
 }
@@ -633,12 +646,12 @@ int sapi_get_sndbufsize(int sock)
     int size;
     socklen_t sizelen = sizeof(size);
     int ret;
-    
+
     ret = getsockopt(sock, SOL_SOCKET, SO_SNDBUF, &size, &sizelen);
     if (ret < 0) {
         return -1;
     }
-    
+
     return size;
 }
 
@@ -647,12 +660,11 @@ int sapi_get_rcvbufsize(int sock)
     int size;
     socklen_t sizelen = sizeof(size);
     int ret;
-    
+
     ret = getsockopt(sock, SOL_SOCKET, SO_RCVBUF, &size, &sizelen);
     if (ret < 0) {
         return -1;
     }
-    
+
     return size;
 }
-
