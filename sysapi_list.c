@@ -6,6 +6,16 @@ struct sapi_list_ctx {
     struct sapi_list *head, *tail;
 };
 
+struct sapi_list *sapi_list_get_head(void *ctx)
+{
+    return ((struct sapi_list_ctx *)ctx)->head;
+}
+
+struct sapi_list *sapi_list_get_tail(void *ctx)
+{
+    return ((struct sapi_list_ctx *)ctx)->tail;
+}
+
 void *sapi_list_first_elem(void *ctx)
 {
     struct sapi_list_ctx *list_ctx = ctx;
