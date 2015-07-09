@@ -378,3 +378,33 @@ int sysapi_getdelim(char *line, int size, char delim, FILE *fp)
     return char_count;
 }
 
+sigset_t sysapi_init_siglock(int *signal_list, int signal_list_len)
+{
+    int i;
+    sigset_t sigmask;
+    
+    sigemptyset(&sigmask);
+    
+    for (i = 0; i < signal_list_len; i++) {
+        sigaddset(&sigmask, signal_list[i]);
+    }
+    return sigmask;
+}
+
+int sysapi_signal_lock(sigset_t *sigset)
+{
+    sigprocmask(SIG_BLOCK, sigset, NULL);
+    return 0;
+}
+
+int sysapi_signal_unlock(sigset_t *sigset)
+{
+    sigprocmask(SIG_UNBLOCK, sigset, NULL);
+    return 0;
+}
+
+int sysapi_install_sighandler(int signal_no, void (*signal_handler)(int signal_no))
+{
+    signal(signal_no, signal_handler);
+    return 0;
+}
