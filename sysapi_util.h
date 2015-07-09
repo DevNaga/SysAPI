@@ -5,6 +5,7 @@
 #include <sys/time.h>
 #include <time.h>
 #include <stdlib.h>
+#include <signal.h>
 
 #define SYSAPI_LEVEL_NORM 4
 #define SYSAPI_LEVEL_INFO 3
@@ -83,5 +84,11 @@ int sysapi_find_files_with_ext(char *dir, char *ext,
 void sysapi_skip_line(FILE *fp);
 
 int sysapi_getdelim(char *line, int size, char delim, FILE *fp);
+
+sigset_t sysapi_init_siglock(int *signal_list, int signal_list_len);
+
+int sysapi_signal_lock(sigset_t *set);
+
+int sysapi_signal_unlock(sigset_t *set);
 
 #endif
