@@ -353,6 +353,17 @@ void *sysapi_get_maped_fdata_ptr(void *sfmap)
     return _sfmap->maped_mem;
 }
 
+int sysapi_chroot_dir(char *directory)
+{
+    int ret;
+
+    ret = chdir(directory);
+    if (ret == 0)
+        return chroot(directory);
+
+    return -1;
+}
+
 #ifdef CONFIG_ADVANCED
 // mini lsof command implementer API..
 int sysapi_get_files_inuse(char *progname,
