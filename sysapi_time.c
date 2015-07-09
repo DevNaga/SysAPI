@@ -54,6 +54,24 @@ int sapi_get_cur_caltime(struct sapi_time *sapi_time)
     return ret;
 }
 
+int sysapi_snprintf_cur_caltime(char *buf, int len)
+{
+    struct sapi_time sapi_time;
+    int ret;
+
+    ret = sapi_get_cur_caltime(&sapi_time);
+    if (ret == -1)
+        return ret;
+
+    return snprintf(buf, len, "%02d:%02d:%04d: %02d:%02d:%02d",
+                    sapi_time.day,
+                    sapi_time.mon + 1,
+                    sapi_time.year,
+                    sapi_time.hour,
+                    sapi_time.min,
+                    sapi_time.sec);
+}
+
 int sapi_get_cur_monstr(char *mon)
 {
     int ret = -1;
@@ -91,4 +109,3 @@ int main(void)
     return 0;
 }
 #endif
-
