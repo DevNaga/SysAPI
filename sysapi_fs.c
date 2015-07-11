@@ -247,6 +247,7 @@ int sysapi_get_symlink_count(char *filename)
 struct _sysapi_fmap {
     void *maped_mem;
     int f_size;
+    int f_off;
     int fd;
 };
 
@@ -351,6 +352,22 @@ void *sysapi_get_maped_fdata_ptr(void *sfmap)
     struct _sysapi_fmap *_sfmap = sfmap;
 
     return _sfmap->maped_mem;
+}
+
+void *sysapi_create_maped_file(char *filename, int size)
+{
+    int ret;
+
+    ret = sysapi_new_truncate_file(filename, size);
+    if (ret < 0)
+        return NULL;
+
+    return _sysapi_map_file(filename, O_RDWR);
+}
+
+void sysapi_close_maped_file(void *__sfmap)
+{
+    sysapi_sync_unmap_file(__sfmap);
 }
 
 int sysapi_chroot_dir(char *directory)

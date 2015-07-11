@@ -18,6 +18,8 @@ struct sapi_time {
 
 int sapi_get_cur_caltime(struct sapi_time *);
 
+int sysapi_snprintf_cur_caltime(char *buf, int len);
+
 int sapi_get_cur_monstr(char *);
 
 #endif
