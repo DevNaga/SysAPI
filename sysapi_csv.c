@@ -49,6 +49,8 @@ static void __sysapi_strcut(char *string, void (*cbf)(struct csv_coldata *coldat
         } else {
             coldata[col].data = strdup(string + pos);
             coldata[col].col = col + 1;
+            col++;
+            break;
         }
     }
 
