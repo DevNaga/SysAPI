@@ -403,6 +403,39 @@ int sysapi_signal_unlock(sigset_t *sigset)
     return 0;
 }
 
+int sysapi_get_int(char *data, long int *val)
+{
+    char *endptr;
+
+    *val = strtol(data, &endptr, 10);
+    if (endptr)
+        return -1;
+
+    return 0;
+}
+
+int sysapi_get_uint(char *data, unsigned long int *val)
+{
+    char *endptr;
+
+    *val = strtoul(data, &endptr, 10);
+    if (endptr)
+        return -1;
+
+    return 0;
+}
+
+int sysapi_get_double(char *data, double *val)
+{
+    char *endptr;
+
+    *val = strtod(data, &endptr);
+    if (endptr)
+        return -1;
+
+    return 0;
+}
+
 /// XXX: using of signal() API is outdated... should not be used
 int sysapi_install_sighandler(int signal_no, void (*signal_callback)(int signal_no))
 {

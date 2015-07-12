@@ -1,19 +1,18 @@
 This is what i can think of this time.. more to go when i read more and more useful linux programming stuff..
 
 
-1. provide CSV based file reading API
-2. provide a way to log to shared memory
+1. provide a way to log to shared memory
     1. log when asked
     2. dump when needed
     3. tail -f dump facility
-3. provide utility API to log to syslog
-4. provide utility for logging on the console (in case of errors)
-5. sharedmemory based message passing (socket + shm)
-6. adding support for timers in the event library
-7. adding support for signals and signal handling (more reading of signals and async safe APIs)
-8. more IOCTL based interface API
-9. testing .. testing .. testing .. when time permits apart from work.
-10. provide /proc/filesystems reading and displaying file systems
-11. a multi ip and port listener API
-12. Mutlicast server and client APIs
-13. Direct broadcast server and client APIs
+2. provide utility API to log to syslog
+3. provide utility for logging on the console (in case of errors)
+4. sharedmemory based message passing (socket + shm)
+5. adding support for timers in the event library
+6. adding support for signals and signal handling (more reading of signals and async safe APIs)
+7. more IOCTL based interface API
+8. testing .. testing .. testing .. when time permits apart from work.
+9. provide /proc/filesystems reading and displaying file systems
+10. a multi ip and port listener API
+11. Mutlicast server and client APIs
+12. Direct broadcast server and client APIs

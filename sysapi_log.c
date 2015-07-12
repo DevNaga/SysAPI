@@ -16,3 +16,4 @@ void sapi_close_syslog(int syslog_sock)
 {
     sapi_unix_tcp_client_destroy(syslog_sock);
 }
+

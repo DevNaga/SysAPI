@@ -351,7 +351,7 @@ void *sysapi_get_maped_fdata_ptr(void *sfmap)
 {
     struct _sysapi_fmap *_sfmap = sfmap;
 
-    return _sfmap->maped_mem;
+    return _sfmap->maped_mem + _sfmap->f_off;
 }
 
 void *sysapi_create_maped_file(char *filename, int size)
@@ -368,6 +368,18 @@ void *sysapi_create_maped_file(char *filename, int size)
 void sysapi_close_maped_file(void *__sfmap)
 {
     sysapi_sync_unmap_file(__sfmap);
+}
+
+int sysapi_update_writen_bytes(int len, void *__sfmap)
+{
+    struct _sysapi_fmap *_sfmap = __sfmap;
+
+    if ((_sfmap->f_off + len) > _sfmap->f_size)
+        return -1;
+
+    _sfmap->f_off += len;
+
+    return 0;
 }
 
 int sysapi_chroot_dir(char *directory)
