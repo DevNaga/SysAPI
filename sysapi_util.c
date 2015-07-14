@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include "sysapi_fs.h"
 #include "sysapi_util.h"
+#include "sysapi_libgen.h"
 
 #define ANSI_COLOR_RED     "\x1B[31m"
 #define ANSI_COLOR_GREEN   "\x1B[32m"
@@ -87,13 +88,13 @@ int sysapi_get_line(char *buf, FILE *fp, int len)
     while (i < len - 1) {
         a = fgetc(fp);
         if ((a == '\n') ||
-            (a == EOF)) {
-            buf[i] = '\0';
+            (a == EOF))
             break;
-        }
         buf[i] = a;
         i++;
     }
+
+    buf[i] = '\0';
 
     return i;
 }
@@ -104,6 +105,16 @@ int sysapi_get_arch(void)
         return SYSAPI_ARCH_64_BIT;
     else
         return SYSAPI_ARCH_32_BIT;
+}
+
+int sysapi_is_arch_64bit(void)
+{
+    return (sysapi_get_arch() == SYSAPI_ARCH_64_BIT);
+}
+
+int sysapi_is_arch_32bit(void)
+{
+    return (sysapi_get_arch() == SYSAPI_ARCH_32_BIT);
 }
 
 int sysapi_stringrand(char *elem, int len)
@@ -161,14 +172,23 @@ int sysapi_get_rand(void)
     int number = 0;
 
     fd = open("/dev/urandom", O_RDONLY);
-    if (fd < 0)
+    if (fd < 0) {
+        sysapi_err(
+                "%s-> %s:%d  cannot create /dev/urandom\n",
+                __FILE__, __func__, __LINE__);
         return -1;
+    }
 
     ret = read(fd, &number, sizeof(number));
     if (ret < 0) {
-        close(ret);
+        sysapi_err(
+                "%s-> %s:%d  cannot read from fd %d\n",
+                __FILE__, __func__, __LINE__);
+        close(fd);
         return -1;
     }
+
+    close(fd);
 
     return number;
 }
@@ -442,3 +462,4 @@ int sysapi_install_sighandler(int signal_no, void (*signal_callback)(int signal_
     signal(SIGINT, signal_callback);
     return 0;
 }
+

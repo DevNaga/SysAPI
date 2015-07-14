@@ -1,4 +1,5 @@
 #include "sysapi_proc.h"
+#include "sysapi_libgen.h"
 
 #define PROC_MEM_INFO "/proc/meminfo"
 #define PROC_CMD_LINE "/proc/cmdline"
@@ -243,6 +244,39 @@ int sysapi_get_kernel_meminfo(struct sysapi_kernel_meminfo *meminfo)
     fclose(fp);
 
     return 0;
+}
+
+int sysapi_get_proc_name(char *name, int len)
+{
+#define PROC_SELF_COM "/proc/self/comm"
+    int ret;
+    int fd;
+
+    fd = open(PROC_SELF_COM, O_RDWR);
+    if (fd < 0)
+        return -1;
+
+    ret = read(fd, name, len);
+    if (ret < 0) {
+        close(fd);
+        return -1;
+    }
+
+    close(fd);
+    return 0;
+#undef PROC_SELF_COM
+}
+
+int sysapi_is_proc_mounted()
+{
+    int fd;
+    int ret;
+
+    fd = open("/proc", O_RDONLY);
+    ret = fd;
+    close(fd);
+
+    return ret < 0 ? -1: 0;
 }
 
 UNUSED static void _sysapi_parse_crypto_data(char *filebuf, char *dest)

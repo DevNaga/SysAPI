@@ -11,6 +11,25 @@ struct _sysapi_cirque {
     struct queue_buf *head, *tail;
 };
 
+void sysapi_cirque_display(void *queue)
+{
+    struct _sysapi_cirque *_cirque = queue;
+    struct queue_buf *_q = _cirque->head;
+    int i = 0;
+
+    printf("\n================ LIST STARTS ==================\n");
+    for (_q; _q; _q = _q->next) {
+        if (i != 0) {
+            if (i % 16 == 0)
+                printf("\n");
+
+            printf("%d[%s] ", i, (_q->allocated == 0) ? "-": "x");
+        }
+        i++;
+    }
+    printf("\n================ LIST ENDS =====================\n");
+}
+
 static int is_free_queue(struct queue_buf *queue)
 {
     return (queue->allocated == 0);
@@ -87,6 +106,21 @@ int sysapi_get_qlen(void *libctx)
     return queue->len;
 }
 
+int sysapi_get_empty_qlen(void *libctx)
+{
+    struct _sysapi_cirque *queue = libctx;
+
+    struct queue_buf *buf = queue->head;
+    int count = 0;
+
+    for (buf; buf; buf = buf->next) {
+        if (buf->allocated == 0)
+            count++;
+    }
+
+    return count;
+}
+
 void sysapi_cirque_add(void *libctx, void *data)
 {
     struct _sysapi_cirque *queue = libctx;
@@ -154,3 +188,4 @@ void sysapi_cirque_deinit(void *libctx)
 
     free(queue);
 }
+

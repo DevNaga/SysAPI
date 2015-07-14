@@ -40,6 +40,9 @@ void sysapi_printf(int level, char *msg, ...);
 
 #define sysapi_log_norm sysapi_print_norm
 
+#define SYSAPI_MIN_VAL(__a, __b) ((__a < __b) ? (__a): (__b))
+#define SYSAPI_MAX_VAL(__a, __b) ((__a > __b) ? (__a): (__b))
+
 // get a line from a file. The line will be copied to the buf.
 // the last new line from the file will be eliminated from the buffer
 int sysapi_get_line(char *buf, FILE *fp, int len);

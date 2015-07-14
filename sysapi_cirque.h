@@ -12,6 +12,10 @@ void sysapi_cirque_add(void *libctx, void *data);
 
 void sysapi_cirque_for_each(void *libctx, void *cbdata, void (*cb_caller)(void *cbdata, void *data));
 
+int sysapi_cirque_mark_node_empty(void *libctx, void *data);
+
+#define sysapi_cirque_delete_node sysapi_cirque_mark_node_empty
+
 void sysapi_cirque_deinit(void *libctx);
 
 #endif

@@ -16,26 +16,40 @@ struct hash_table {
 
 void *sapi_hashtbl_init(int size)
 {
-    if (size < 1)
+    if (size < 1) {
+        sysapi_err("%s: %s:%u  Invalid hashtable size %d\n",
+                __FILE__, __func__, __LINE__, size);
         return NULL;
+    }
 
     struct hash_table *tbl;
 
     tbl = calloc(1, sizeof(struct hash_table));
-    if (!tbl)
+    if (!tbl) {
+        sysapi_alloc_err();
         return NULL;
+    }
 
     tbl->size = size;
 
     tbl->list = calloc(tbl->size, sizeof(struct list));
-    if (!tbl->list)
+    if (!tbl->list) {
+        sysapi_alloc_err();
         goto err_tbl_aloc;
+    }
 
     return tbl;
 
 err_tbl_aloc:
     free(tbl);
     return NULL;
+}
+
+int sysapi_get_hashtbl_size(void *ctx)
+{
+    struct hash_table *tbl = ctx;
+
+    return tbl->size;
 }
 
 void sapi_hashtbl_deinit(void *ctx,

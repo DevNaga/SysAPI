@@ -12,6 +12,7 @@ int free_list(void *ptr, void *data)
 int main(void)
 {
     int list_size = 200;
+    int total_size = 0;
     list = sapi_list_init();
     if (!list)
         return -1;
@@ -31,12 +32,19 @@ int main(void)
     }
     
     sapi_list_foreach(list, list_item) {
+        total_size++;
         int *ele = sapi_list_item_data(list_item);
         if (ele)
             printf("%d\n", *ele);
     }
-    
+
+    if (list_size != total_size) {
+        printf("list allocation error\n");
+        return -1;
+    }
+
     sapi_list_deinit(list, NULL, free_list);
 
     return 0;
 }
+
