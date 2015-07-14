@@ -6,12 +6,14 @@ error_chk() {
     fi
 }
 
-make clean && make
+cd core && make clean && make
 error_chk
 
 # apply the library to the standard lib path to link with the test packages
 sudo cp libsysapi.so /usr/lib/ && sudo ldconfig
 error_chk
+
+cd ../
 
 python test_build.py clean && python test_build.py build
 error_chk

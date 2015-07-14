@@ -22,13 +22,12 @@ static void __sysapi_skip_csv_header(FILE *fp)
 
 static void __sysapi_strcut(char *string, void (*cbf)(struct csv_coldata *coldata, int coldata_len))
 {
-#define MAX_COLS 255
     int len;
     int i;
     char *loc;
     int pos = 0;
     int col = 0;
-    struct csv_coldata coldata[MAX_COLS];
+    struct csv_coldata coldata[_CSV_MAX_COLS];
     int length = strlen(string) - 1;
 
     while (pos <= length) {
@@ -36,7 +35,7 @@ static void __sysapi_strcut(char *string, void (*cbf)(struct csv_coldata *coldat
         if (loc) {
             len = loc - &string[pos];
             if (len > 0) {
-                if (col >= MAX_COLS)
+                if (col >= _CSV_MAX_COLS)
                     break;
 
                 coldata[col].data = strndup(string + pos, len);
@@ -64,7 +63,7 @@ int sysapi_get_csvline(char *filename,
                        void (*cbf)(struct csv_coldata *coldata, int coldata_len))
 {
     FILE *fp;
-    char buf[1024];
+    char buf[BUFSIZ];
 
     fp = fopen(filename, "r");
     if (!fp)
