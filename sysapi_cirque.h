@@ -18,5 +18,15 @@ int sysapi_cirque_mark_node_empty(void *libctx, void *data);
 
 void sysapi_cirque_deinit(void *libctx);
 
+#ifdef LIBSYSAPI_DEBUG
+
+void sysapi_cirque_display(void *libctx);
+
+#else
+
+#define sysapi_cirque_display(libctx) {}
+
+#endif
+
 #endif
 

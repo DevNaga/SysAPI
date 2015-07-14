@@ -11,6 +11,7 @@ struct _sysapi_cirque {
     struct queue_buf *head, *tail;
 };
 
+#ifdef LIBSYSAPI_DEBUG
 void sysapi_cirque_display(void *queue)
 {
     struct _sysapi_cirque *_cirque = queue;
@@ -29,6 +30,7 @@ void sysapi_cirque_display(void *queue)
     }
     printf("\n================ LIST ENDS =====================\n");
 }
+#endif
 
 static int is_free_queue(struct queue_buf *queue)
 {
