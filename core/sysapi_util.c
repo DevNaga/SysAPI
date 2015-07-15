@@ -84,19 +84,27 @@ int sysapi_get_line(char *buf, FILE *fp, int len)
 {
     int i = 0;
     int a;
+    int length = 0;
 
     while (i < len - 1) {
         a = fgetc(fp);
-        if ((a == '\n') ||
-            (a == EOF))
+        if (a == '\n') {
+            length = i;
             break;
+        }
+
+        if (a == EOF) {
+            length = -1;
+            break;
+        }
+
         buf[i] = a;
         i++;
     }
 
     buf[i] = '\0';
 
-    return i;
+    return length;
 }
 
 int sysapi_get_arch(void)
@@ -462,4 +470,3 @@ int sysapi_install_sighandler(int signal_no, void (*signal_callback)(int signal_
     signal(SIGINT, signal_callback);
     return 0;
 }
-
