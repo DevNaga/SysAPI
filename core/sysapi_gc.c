@@ -2,6 +2,7 @@
 #include "sysapi_util.h"
 #include "sysapi_gc.h"
 #include "sysapi_gc_i.h"
+#include "sysapi_libgen.h"
 
 static void *_sapi_alloc(void *__ref, int clear, int scoped, int size, const char *func, int line)
 {
@@ -10,8 +11,10 @@ static void *_sapi_alloc(void *__ref, int clear, int scoped, int size, const cha
     struct _gc_mem_identifer *ref;
 
     ref = calloc(1, sizeof(struct _gc_mem_identifer));
-    if (!ref)
+    if (!ref) {
+        sysapi_alloc_err();
         return NULL;
+    }
 
     ref->func = func;
     ref->line = line;
@@ -46,8 +49,10 @@ static void *sapi_scope_init(void *__ref)
 
     if (!ref->gc_scoped_list) {
         ref->gc_scoped_list = sapi_list_init();
-        if (!ref->gc_scoped_list)
+        if (!ref->gc_scoped_list) {
+            sysapi_err("failed to create a scoped allocator\n");
             return NULL;
+        }
     }
 
     return ref;
@@ -76,7 +81,7 @@ static int _sapi_gc_dump_scoped_heap(void *ref, void *data)
     sysapi_log_info("SAPIGC:", "freeing memory allocated at %s %u %d\n", id->func, id->line, i++);
 #endif
     if (id->scoped) {
-        free(id->memory);
+        FREE(id->memory);
         free(id);
     }
 
@@ -100,8 +105,10 @@ void *sapi_gc_startup()
         return NULL;
 
     ref->gc_list = sapi_list_init();
-    if (!ref->gc_list)
+    if (!ref->gc_list) {
+        sysapi_err("failed to create a gc list\n");
         return NULL;
+    }
 
     return ref;
 }
@@ -116,7 +123,7 @@ static int _sapi_gc_dump_heap(void *ref, void *data)
 #endif
 
     if (!id->scoped) {
-        free(id->memory);
+        FREE(id->memory);
         free(id);
     }
     return 0;
@@ -125,6 +132,9 @@ static int _sapi_gc_dump_heap(void *ref, void *data)
 void sapi_gc_cleanup(void *__ref)
 {
     struct _gc_struct *ref = __ref;
+
+    if (!__ref)
+        return;
 
     sapi_list_deinit(ref->gc_list, ref, _sapi_gc_dump_heap);
     free(ref);

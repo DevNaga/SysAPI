@@ -470,3 +470,4 @@ int sysapi_install_sighandler(int signal_no, void (*signal_callback)(int signal_
     signal(SIGINT, signal_callback);
     return 0;
 }
+

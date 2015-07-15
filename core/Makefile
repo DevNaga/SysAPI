@@ -4,7 +4,6 @@ CC    = gcc
 # Remove -g when releasing the library
 CFLAGS       = -Wall -Wmissing-prototypes -Wstrict-prototypes -fstack-protector-all -fPIC -g
 LDFLAGS = -shared
-
 TARGET  = libsysapi.so
 SOURCES = $(shell echo *.c)
 HEADERS = $(shell echo *.h)

@@ -1,4 +1,4 @@
-#include "../sysapi.h"
+#include "../core/sysapi.h"
 
 void test_dir_cb(char *filename, sysapi_file_type type, void *app_ctx)
 {

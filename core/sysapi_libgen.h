@@ -33,8 +33,11 @@
 #define sysapi_norm(...)              (void)0
 #endif
 
-#define sysapi_alloc_err(...)         sysapi_log_err("libsysapi:  ", \
+#define sysapi_alloc_err()            sysapi_log_err("libsysapi:  ", \
 		                                  "%s-> %s:%u allocation error\n", \
 		                                  __FILE__, __func__, __LINE__)
+
+#define FREE(_ptr) (_ptr) ? free(_ptr):(NULL);
+
 #endif
 

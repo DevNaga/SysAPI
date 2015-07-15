@@ -1,4 +1,4 @@
-#include "../sysapi.h"
+#include "../core/sysapi.h"
 
 void *libctx;
 

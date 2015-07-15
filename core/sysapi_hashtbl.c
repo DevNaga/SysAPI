@@ -1,4 +1,6 @@
 #include "sysapi_hashtbl.h"
+#include "sysapi_util.h"
+#include "sysapi_libgen.h"
 
 #define MAX_HASHES 200
 

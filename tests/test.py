@@ -21,6 +21,16 @@ sysfs_tests=[
 sysutil_tests=[
         "sudo ./test_sysutil"
         ]
+syslist_tests=[
+        "sudo ./test_syslist"
+        ]
+
+valgrind_cmd="sudo valgrind"
+valgrind_leak_options="--leak-check=full --track-origins=yes --show-reachable=yes"
+syslist_test_options="./test_syslist 1>valgrind_syslist.leaks 2>&1"
+leak_tests=[
+        valgrind_cmd + " " + valgrind_leak_options + " " + syslist_test_options
+        ]
 
 command_exec=[
         sysnet_tests,
@@ -28,6 +38,7 @@ command_exec=[
         sysevent_tests,
         sysfs_tests,
         sysutil_tests,
+        leak_tests,
         ]
 
 output_result="results"
@@ -49,3 +60,4 @@ if failure == 0:
     fd.write("all success\n")
 
 fd.close()
+
