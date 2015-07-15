@@ -1,4 +1,4 @@
-#include "../sysapi_util.h"
+#include "../core/sysapi_util.h"
 
 int main(void) {
     int a = 1, b = 2;
@@ -12,6 +12,18 @@ int main(void) {
     printf("%s\n", (sysapi_get_arch() == SYSAPI_ARCH_64_BIT)? "64": "32");
     printf("%d\n", sysapi_get_rand());
     printf("%d\n", sysapi_get_rand_range(22));
+
+    ret = test_get_line();
+    if (ret < 0) {
+        printf("get line test failure\n");
+        return ret;
+    }
+
+    ret = test_getdelim();
+    if (ret < 0) {
+        printf("get delimiter test failure\n");
+        return ret;
+    }
 
     ret = sysapi_create_lockfile("/tmp/sysapi_test_lock.lock");
     if (ret == 0) {
