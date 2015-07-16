@@ -16,7 +16,6 @@ void csv_file(struct csv_coldata *coldata, int coldata_len)
 }
 
 int main(void) {
-    FILE *fp;
     char *csvfile = "csvfile.csv";
     int ret;
 

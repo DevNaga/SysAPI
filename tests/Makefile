@@ -22,10 +22,13 @@ syscirque_tgt:
 syslist_tgt:
 	gcc -Wall test_syslist.c -o test_syslist -lsysapi -pthread
 
+sysqueue_tgt:
+	gcc -Wall test_sysqueue.c -o test_sysqueue -lsysapi -pthread
+
 sysutil_tgt:
 	gcc -Wall test_sysutil.c test_getline.c test_getdelim.c -o test_sysutil -lsysapi -pthread
 
-all: sysutil_tgt syslist_tgt syscirque_tgt syscsv_tgt sysgc_tgt sysevent_tgt sysnet_tgt syswq_tgt sysfs_tgt
+all: sysutil_tgt syslist_tgt syscirque_tgt syscsv_tgt sysgc_tgt sysevent_tgt sysnet_tgt syswq_tgt sysfs_tgt sysqueue_tgt
 
 clean:
-	rm -rf test_sysutil test_syslist test_syscirque test_syscsv test_sysgc test_sysevent test_sysnet tset_syswq test_sysfs
+	rm -rf test_sysutil test_syslist test_syscirque test_syscsv test_sysgc test_sysevent test_sysnet tset_syswq test_sysfs test_sysqueue
