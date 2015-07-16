@@ -1,4 +1,4 @@
-#include "../sysapi_gc.h"
+#include "../core/sysapi_gc.h"
 
 void *reference;
 

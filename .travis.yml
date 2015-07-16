@@ -3,4 +3,4 @@ compiler: gcc
 sudo: true
 before install:
   - sudo pip install cpp-coveralls
-script: bash builder
+script: sudo python build.py
