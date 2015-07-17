@@ -28,6 +28,26 @@ void test_list_dir(char *dir, void *ctx)
     printf("dir %s\n", dir);
 }
 
+/// FILE exist test case
+//
+
+int test_file_exist()
+{
+    char non_existent[] = "fksjkfiuwaiekwfaew";
+    char existent[] = "test_sysfs.c";
+    int ret;
+
+    ret = sysapi_file_exist(existent);
+    if (ret < 0)
+        return -1;
+
+    ret = sysapi_file_exist(non_existent);
+    if (ret >= 0)
+        return -1;
+
+    return 0;
+}
+
 int main(void)
 {
     char *dir = ".";
@@ -42,5 +62,6 @@ int main(void)
     ret = sysapi_touch("test1");
     ret = sysapi_create_pidfile("test1.pid");
     ret = sysapi_list_dir(dir, test_list_dir, NULL);
+    ret = test_file_exist();
     return ret;
 }

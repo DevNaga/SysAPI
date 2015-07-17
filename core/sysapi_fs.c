@@ -1,4 +1,5 @@
 #include "sysapi_fs.h"
+#include "sysapi_fs_i.h"
 
 int sysapi_dir_read(char *dirpath,
                     void (*callback)(char *filename, sysapi_file_type type, void *app_ctx),
@@ -6,7 +7,7 @@ int sysapi_dir_read(char *dirpath,
 {
     DIR *dirp;
     struct dirent *entry;
-    char path[300];
+    char path[SYSAPI_PATH_MAX];
 
     dirp = opendir(dirpath);
     if (!dirp)
@@ -44,7 +45,7 @@ int sysapi_list_dir(char *dirpath,
 {
     DIR *dirp;
     struct dirent *entry;
-    char path[300];
+    char path[SYSAPI_PATH_MAX];
 
     dirp = opendir(dirpath);
     if (!dirp)
@@ -132,7 +133,7 @@ int sysapi_new_truncate_file(char *filename, int filesize)
 
 int sysapi_untouch(char *filename)
 {
-    sysapi_unlink_file(filename);
+    return sysapi_unlink_file(filename);
 }
 
 int sysapi_makedir(char *dirname)
@@ -152,7 +153,7 @@ int sysapi_dir_walk(char *dirpath,
 {
     DIR *dirp;
     struct dirent *entry;
-    char path[300];
+    char path[SYSAPI_PATH_MAX];
 
     dirp = opendir(dirpath);
     if (!dirp)
@@ -161,12 +162,12 @@ int sysapi_dir_walk(char *dirpath,
     strncpy(path, dirpath, strlen(dirpath) + 1);
     while ((entry = readdir(dirp)) != NULL) {
         memset(path, 0, sizeof(path));
-        strcpy(path, dirpath);
+        strncpy(path, dirpath, sizeof(path));
 
         if (path[strlen(path) - 1] != '/')
-            strcat(path, "/");
+            strncat(path, "/", sizeof(path));
 
-        strncat(path, entry->d_name, strlen(entry->d_name));
+        strncat(path, entry->d_name, sizeof(path));
 
         struct stat sf;
 
@@ -201,7 +202,7 @@ int sysapi_read_binfile(char *filename,
         return -1;
 
     while (1) {
-        char filedata[300];
+        char filedata[SYSAPI_FILE_MAX];
 
         memset(filedata, 0, sizeof(filedata));
         int ret = read(fd, filedata, sizeof(filedata));
@@ -401,7 +402,7 @@ int sysapi_get_files_inuse(char *progname,
 {
     DIR *dirp;
     struct dirent *entry;
-    char path[300];
+    char path[SYSAPI_PATH_MAX];
 }
 
 
