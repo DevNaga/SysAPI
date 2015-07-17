@@ -243,12 +243,14 @@ int sysapi_daemonize(char *wd, char *lfile)
 
     umask(027);
 
-    _fd = open(lfile, O_RDWR | O_CREAT);
-    if (_fd < 0)
-        return -1;
+    if (lfile) {
+        _fd = open(lfile, O_RDWR | O_CREAT);
+        if (_fd < 0)
+            return -1;
 
-    if (lockf(_fd, F_TLOCK, 0) < 0)
-        return -1;
+        if (lockf(_fd, F_TLOCK, 0) < 0)
+            return -1;
+    }
     return 0;
 }
 
@@ -470,4 +472,3 @@ int sysapi_install_sighandler(int signal_no, void (*signal_callback)(int signal_
     signal(SIGINT, signal_callback);
     return 0;
 }
-
