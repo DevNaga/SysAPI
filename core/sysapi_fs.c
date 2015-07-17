@@ -17,7 +17,7 @@ int sysapi_dir_read(char *dirpath,
         sysapi_file_type type;
 
         memset(path, 0, sizeof(path));
-        strncat(path, entry->d_name, strlen(entry->d_name));
+        strncat(path, entry->d_name, sizeof(path));
 
         struct stat sf;
 
