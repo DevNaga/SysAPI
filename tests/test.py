@@ -5,7 +5,7 @@ import os
 sysnet_tests=[
         "sudo ./test_sysnet -m eth0",
         "sudo ./test_sysnet -c",
-        "sudo ./test_sysnet -M",
+        "sudo ./test_sysnet -M eth0", # on ubuntu machines, Fedora uses a generated enp0s3 name
         "sudo ./test_sysnet -n",
         ]
 

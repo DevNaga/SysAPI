@@ -2,6 +2,7 @@
 
 void *reference;
 
+// double allocations overwriting the previous allocation test
 void scoped_allocator(int loops, int size)
 {
     void *var;
@@ -19,6 +20,7 @@ void allocator(int loops, int size)
     for (i = 0; i < loops; i++) {
         mem = SAPI_MALLOC(reference, size);
         printf("allocated %p %d\n", mem, loops);
+        //looped allocation tests
     }
     loops--;
     if (loops <= 0)

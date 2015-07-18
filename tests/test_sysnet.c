@@ -19,9 +19,9 @@ int get_mac_addr(char *ifname)
     return ret;
 }
 
-int get_mtu()
+int get_mtu(char *mtu_ifname)
 {
-    int mtu = sysapi_get_mtu("enp0s3");
+    int mtu = sysapi_get_mtu(mtu_ifname);
     if (mtu < 0) {
         printf("get mtu test fails\n");
         return -1;
@@ -64,13 +64,13 @@ int main(int argc, char *argv[])
     int opt;
     char *ifname = NULL;
     int mc = 0;
-    int mtu = 0;
+    char *mtu_ifname = 0;
     int nm = 0;
 
     if (argc == 1)
         return -1;
 
-    while ((opt = getopt(argc, argv, "m:cMn")) != -1) {
+    while ((opt = getopt(argc, argv, "m:cM:n")) != -1) {
         switch (opt) {
             case 'm':
                 ifname = optarg;
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
                 mc = 1;
             break;
             case 'M':
-                mtu = 1;
+                mtu_ifname = optarg;
             break;
             case 'n':
                 nm = 1;
@@ -96,12 +96,15 @@ int main(int argc, char *argv[])
     } else if (mc) {
         ret = get_so_max_conn();
         ret = set_so_max_conn();
-    } else if (mtu) {
-        ret = get_mtu();
+    } else if (mtu_ifname) {
+        ret = get_mtu(mtu_ifname);
     } else if (nm) {
         char net[30];
         ret = sysapi_get_netmask("eth0", net);
-        printf("netmask %s\n", net);
+        if (ret == -LSAPI_INET_ADDR_NOTAVAIL)
+            printf("no network address available\n");
+        else if (ret == 0)
+            printf("netmask %s\n", net);
     }
 
     sapi_lib_context_destroy(libctx);

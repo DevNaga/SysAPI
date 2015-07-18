@@ -21,6 +21,10 @@ struct sapi_lib_context {
     int drv_fd;
 };
 
+// the libcontext is a bad idea of
+// having an fd for a quick get without doing any socket creation
+// but looks like, the second approach is more elegant without
+// making an app confused about a simple API
 void *sapi_lib_context_create(void)
 {
     struct sapi_lib_context *libctx;
@@ -261,6 +265,8 @@ int sysapi_get_netmask(char *ifname, char *nmask)
     ret = ioctl(fd, SIOCGIFNETMASK, &ifr);
     if (ret < 0) {
         close(fd);
+        if (errno == EADDRNOTAVAIL)
+            return -LSAPI_INET_ADDR_NOTAVAIL;
         return -1;
     }
 

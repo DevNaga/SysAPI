@@ -2,6 +2,7 @@
 
 int main(void) {
     int a = 1, b = 2;
+    int failure = 0;
     int ret;
 
     sysapi_log_info("test", "This is an info msg\n");
@@ -16,21 +17,22 @@ int main(void) {
     ret = test_get_line();
     if (ret < 0) {
         printf("get line test failure\n");
-        return ret;
+        failure++;
     }
 
     ret = test_getdelim();
     if (ret < 0) {
         printf("get delimiter test failure\n");
-        return ret;
+        failure++;
     }
 
     ret = sysapi_create_lockfile("/tmp/sysapi_test_lock.lock");
     if (ret == 0) {
         ret = sysapi_file_exist("/tmp/sysapi_test_lock.lock");
         if (ret != 0)
-            return -1;
+            failure++;
     }
 
-    return 0;
+    return failure;
 }
+

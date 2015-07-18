@@ -1,7 +1,7 @@
 #include "../core/sysapi_list.h"
 
-void *list;
-struct sapi_list *list_item;
+static void *list;
+static struct sapi_list *list_item;
 
 int free_list(void *ptr, void *data)
 {
@@ -13,6 +13,8 @@ int main(void)
 {
     int list_size = 200;
     int total_size = 0;
+    int ret;
+
     list = sapi_list_init();
     if (!list)
         return -1;
@@ -40,11 +42,12 @@ int main(void)
 
     if (list_size != total_size) {
         printf("list allocation error\n");
-        return -1;
+        ret = -1;
     }
 
     sapi_list_deinit(list, NULL, free_list);
+    ret = 0;
 
-    return 0;
+    return ret;
 }
 
