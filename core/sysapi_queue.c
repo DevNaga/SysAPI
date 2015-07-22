@@ -40,7 +40,6 @@ int sysapi_queue_enque(void *data, void *qptr)
         qhead->last = elem;
     }
 
-    printf("queued %p\n", data);
     return 0;
 }
 

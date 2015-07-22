@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <time.h>
 #include <sys/time.h>
+#include <sys/timerfd.h>
 #include "sysapi_time.h"
 
 long sapi_get_time_sec()
@@ -109,3 +110,42 @@ int main(void)
     return 0;
 }
 #endif
+
+int sysapi_create_interval_timer(long secs, long usecs)
+{
+    return __sysapi_create_timer(secs, usecs, 1);
+}
+
+int sysapi_create_oneshot_timer(long secs, long usecs)
+{
+    return __sysapi_create_timer(secs, usecs, 0);
+}
+
+int __sysapi_create_timer(long secs, long usec, int interval_timer)
+{
+    struct itimerspec it_sp;
+    int ret;
+    int timer_fd;
+
+    timer_fd = timerfd_create(CLOCK_MONOTONIC, 0);
+    if (timer_fd < 0)
+        return -1;
+
+    memset(&it_sp, 0, sizeof(struct itimerspec));
+
+    it_sp.it_value.tv_sec = secs;
+    it_sp.it_value.tv_nsec = usec * 1000;
+    if (interval_timer) {
+        it_sp.it_interval.tv_sec = secs;
+        it_sp.it_interval.tv_nsec = usec * 1000;
+    }
+
+    ret = timerfd_settime(timer_fd, 0, &it_sp, NULL);
+    if (ret < 0) {
+        close(timer_fd);
+        return -1;
+    }
+
+    return timer_fd;
+}
+
