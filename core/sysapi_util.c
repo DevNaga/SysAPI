@@ -261,25 +261,46 @@ int sysapi_signal_unlock(sigset_t *sigset)
     return 0;
 }
 
-int sysapi_get_int(char *data, long int *val)
+int sysapi_get_int(char *data, int *err, long int *val)
 {
     char *endptr;
 
     *val = strtol(data, &endptr, 10);
-    if (endptr)
+    if (endptr) {
+        *err = -1;
         return -1;
+    }
 
+    *err = 0;
     return 0;
 }
 
-int sysapi_get_uint(char *data, unsigned long int *val)
+// atoi for strings return 0 but this atoi here is more
+// perfect kind .. in the sense that it fails by showing
+// that the return value is 0 instead of a -1 (just like atoi)
+
+int sysapi_atoi(char *data)
+{
+    int val;
+    int err;
+
+    sysapi_get_int(data, &err, &val);
+    if (err != -1)
+        return val;
+    return 0;
+}
+
+int sysapi_get_uint(char *data, int *err, unsigned long int *val)
 {
     char *endptr;
 
     *val = strtoul(data, &endptr, 10);
-    if (endptr)
+    if (endptr) {
+        *err = -1;
         return -1;
+    }
 
+    *err = 0;
     return 0;
 }
 
@@ -311,7 +332,7 @@ void sysapi_stack_trace(void)
 
     strings = backtrace_symbols(buffer, nptrs);
     if (!strings)
-        return -1;
+        return;
 
     for (j = 0; j < nptrs; j++)
         fprintf(stderr, "%s\n", strings[j]);

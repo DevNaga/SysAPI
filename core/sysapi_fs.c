@@ -264,17 +264,12 @@ static void *_sysapi_map_file(char *filename, int mode)
         return NULL;
 
     _sfmap->fd = open(filename, mode);
-    if (_sfmap->fd < 0) {
-        free(_sfmap);
-        return NULL;
-    }
+    if (_sfmap->fd < 0)
+        goto err;
 
     ret = stat(filename, &_sfs);
-    if (ret == -1) {
-        close(_sfmap->fd);
-        free(_sfmap);
-        return NULL;
-    }
+    if (ret == -1)
+        goto err;
 
     _sfmap->f_size = _sfs.st_size;
 
@@ -283,13 +278,17 @@ static void *_sysapi_map_file(char *filename, int mode)
     }
 
     _sfmap->maped_mem = mmap(0, _sfmap->f_size, mode, MAP_SHARED, _sfmap->fd, 0);
-    if (_sfmap->maped_mem == MAP_FAILED) {
-        close(_sfmap->fd);
-        free(_sfmap);
-        return NULL;
-    }
+    if (_sfmap->maped_mem == MAP_FAILED)
+        goto err;
 
     return _sfmap;
+err:
+    if (_sfmap) {
+        if (_sfmap->fd > 0)
+            close(_sfmap->fd);
+        free(_sfmap);
+    }
+    return NULL;
 }
 
 void *sysapi_map_file_rdwr(char *filename)

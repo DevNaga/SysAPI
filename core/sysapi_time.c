@@ -2,6 +2,9 @@
 #include <string.h>
 #include <stdint.h>
 #include <time.h>
+#include <signal.h>
+#include <unistd.h>
+#include "sysapi_util.h"
 #include <sys/time.h>
 #include <sys/timerfd.h>
 #include "sysapi_time.h"
@@ -35,11 +38,10 @@ int sapi_is_dst_active()
 // the first argument here is for thread safety
 int sapi_get_cur_caltime(struct sapi_time *sapi_time)
 {
-    int ret;
+    int ret = -1;
     time_t now;
     struct tm *t;
 
-    ret = -1;
     now = time(0);
     t = localtime(&now);
     if (t) {
@@ -55,12 +57,51 @@ int sapi_get_cur_caltime(struct sapi_time *sapi_time)
     return ret;
 }
 
+int sapi_get_cur_utctime(struct sapi_time *sapi_time)
+{
+    int ret = -1;
+    time_t now;
+    struct tm *t;
+
+    now = time(0);
+    t = gmtime(&now);
+    if (t) {
+        ret = 0;
+        sapi_time->sec = t->tm_sec;
+        sapi_time->min = t->tm_min;
+        sapi_time->hour = t->tm_hour;
+        sapi_time->day = t->tm_mday;
+        sapi_time->mon = t->tm_mon;
+        sapi_time->year = t->tm_year + 1900;
+    }
+
+    return ret;
+}
+
 int sysapi_snprintf_cur_caltime(char *buf, int len)
 {
     struct sapi_time sapi_time;
     int ret;
 
     ret = sapi_get_cur_caltime(&sapi_time);
+    if (ret == -1)
+        return ret;
+
+    return snprintf(buf, len, "%02d:%02d:%04d: %02d:%02d:%02d",
+                    sapi_time.day,
+                    sapi_time.mon + 1,
+                    sapi_time.year,
+                    sapi_time.hour,
+                    sapi_time.min,
+                    sapi_time.sec);
+}
+
+int sysapi_snprintf_cur_utctime(char *buf, int len)
+{
+    struct sapi_time sapi_time;
+    int ret;
+
+    ret = sapi_get_cur_utctime(&sapi_time);
     if (ret == -1)
         return ret;
 
@@ -147,5 +188,41 @@ int __sysapi_create_timer(long secs, long usec, int interval_timer)
     }
 
     return timer_fd;
+}
+
+void sysapi_sleep_in_secs(int secs)
+{
+    sleep(secs);
+}
+
+void sysapi_sleep_in_msecs(int msecs)
+{
+    usleep(msecs * 1000);
+}
+
+void sysapi_sleep_in_secs_unintr(int secs)
+{
+    sigset_t sigmask;
+    int signal_list[] = {SIGINT, SIGQUIT, SIGTERM, SIGALRM};
+
+    sigmask = sysapi_init_siglock(signal_list,
+                           sizeof(signal_list) / sizeof(signal_list[0]));
+
+    sysapi_signal_lock(&sigmask);
+    sysapi_sleep_in_secs(secs);
+    sysapi_signal_unlock(&sigmask);
+}
+
+void sysapi_sleep_in_msecs_unintr(int msecs)
+{
+    sigset_t sigmask;
+    int signal_list[] = {SIGINT, SIGQUIT, SIGTERM, SIGALRM};
+
+    sigmask = sysapi_init_siglock(signal_list,
+                           sizeof(signal_list) / sizeof(signal_list[0]));
+
+    sysapi_signal_lock(&sigmask);
+    sysapi_sleep_in_msecs(msecs);
+    sysapi_signal_unlock(&sigmask);
 }
 

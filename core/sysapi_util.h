@@ -56,6 +56,13 @@ int sysapi_stringrand(char *elem, int len);
 // get the current system architecture
 int sysapi_get_arch(void);
 
+// boolean API for the above
+// find if the arch is of 64 bit
+int sysapi_is_arch_64bit(void);
+
+// find if the arch is of 32 bit
+int sysapi_is_arch_32bit(void);
+
 // daemonizing API
 int sysapi_daemonize(char *wd, char *lfile);
 
@@ -95,6 +102,12 @@ int sysapi_signal_lock(sigset_t *set);
 int sysapi_signal_unlock(sigset_t *set);
 
 int sysapi_install_sighandler(int signal_no, void (*signal_callback)(int signal_no));
+
+int sysapi_get_uint(char *data, int *err, unsigned long int *val);
+
+void sysapi_stack_trace(void);
+
+int sysapi_get_int(char *data, int *err, long int *val);
 
 #endif
 
