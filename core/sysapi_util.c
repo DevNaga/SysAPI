@@ -157,7 +157,7 @@ int sysapi_get_rand(void)
     fd = open("/dev/urandom", O_RDONLY);
     if (fd < 0) {
         sysapi_err(
-                "%s-> %s:%d  cannot create /dev/urandom\n",
+                "%s-> %s:%d  cannot open /dev/urandom\n",
                 __FILE__, __func__, __LINE__);
         return -1;
     }
