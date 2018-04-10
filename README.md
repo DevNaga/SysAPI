@@ -1,3 +1,7 @@
+
+[![Build Status](https://travis-ci.org/DevNaga/libsysapi.svg?branch=master)](https://travis-ci.org/DevNaga/libsysapi/)
+
+
 # libsysapi
 System level APIs to make systems programming simpler.
 
@@ -22,8 +26,3 @@ macro but that disables the event looping).
 When you are using this library use it with ``` -lsysapi ``` and ``` -pthread``` option.
 
 Please note that the library is "not" well tested and it is still in its pre-matured stage.
-
-[![Build Status](https://travis-ci.org/DevNaga/libsysapi.svg?branch=master)](https://travis-ci.org/DevNaga/libsysapi/)
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/DevNaga/sysapi/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
