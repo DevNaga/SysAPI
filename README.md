@@ -22,6 +22,7 @@ supporting multiple threads doing multiples of work..
 
 For more details about my future works.. please have a look at the TODO file in the repository.
 
+
 The library only uses pthreads (the pthread support can be hidden via a
 macro but that disables the event looping).
 
