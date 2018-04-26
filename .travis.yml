@@ -5,7 +5,7 @@ before install:
   - pip install --user cpp-coveralls
   - pip install --user pyyaml
   - sudo apt install libcunit1-dev
-script: sudo python build.py
+script: cd core && make
 
 jobs:
   - stage: coverage
