@@ -14,17 +14,19 @@ os.chdir(core_lib)
 
 ret = os.system(core_build_cmd);
 if ret != 0:
-    return 1
+    exit(1)
 
 ret = os.system(install_lib)
 if ret != 0:
-    return 1
+    exit(0)
 
 os.chdir(base_lib);
 os.chdir(tests_dir);
 
 ret = os.system(test_build_cmd);
 if ret != 0:
-    return 1
+    exit(1)
 
-return 0
+os.system("coveralls --exclude tests/ --exclude doc/ --gcov-options '\-lp'")
+
+exit(0)
