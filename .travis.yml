@@ -5,4 +5,8 @@ before install:
   - pip install --user cpp-coveralls
   - pip install --user pyyaml
   - sudo apt install libcunit1-dev
-script: cd core && make && coveralls --exclude tests/ --exclude doc/ --gcov-options '\-lp'
+script: 
+  - pip install --user cpp-coveralls
+  - pip install --user pyyaml
+  - sudo apt install libcuint1-dev
+  - cd core && make && coveralls --exclude tests/ --exclude doc/ --gcov-options '\-lp'
