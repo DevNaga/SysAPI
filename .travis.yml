@@ -8,6 +8,7 @@ before install:
 script: cd core && make
 
 jobs:
-  - stage: coverage
-    after_success:
-      - coveralls --exclude tests/ --exclude doc/ --gcov-options '\-lp'
+  include:
+    - stage: coverage
+      after_success:
+        - coveralls --exclude tests/ --exclude doc/ --gcov-options '\-lp'
