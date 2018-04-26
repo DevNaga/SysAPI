@@ -2,6 +2,10 @@ language: c
 compiler: gcc
 sudo: true
 before install:
-  - sudo pip install cpp-coveralls
+  - pip install cpp-coveralls
 script: sudo python build.py
-  - coveralls --exclude tests/ --exclude doc/ --gcov-options '\-lp'
+
+jobs:
+  - stage: coverage
+    after_success:
+      - coveralls --exclude tests/ --exclude doc/ --gcov-options '\-lp'
