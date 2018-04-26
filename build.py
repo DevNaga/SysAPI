@@ -14,17 +14,17 @@ os.chdir(core_lib)
 
 ret = os.system(core_build_cmd);
 if ret != 0:
-    exit(1)
+    return 1
 
 ret = os.system(install_lib)
 if ret != 0:
-    exit(1)
+    return 1
 
 os.chdir(base_lib);
 os.chdir(tests_dir);
 
 ret = os.system(test_build_cmd);
 if ret != 0:
-    exit(1)
+    return 1
 
-exit(0)
+return 0
