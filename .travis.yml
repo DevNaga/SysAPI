@@ -10,3 +10,4 @@ script:
   - pip install --user pyyaml
   - sudo apt install libcuint1-dev
   - cd core && make && coveralls --exclude tests/ --exclude doc/ --gcov-options '\-lp'
+  - bash <(curl -s https://codecov.io/bash)
