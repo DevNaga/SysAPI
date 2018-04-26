@@ -27,6 +27,4 @@ ret = os.system(test_build_cmd);
 if ret != 0:
     exit(1)
 
-os.system("coveralls --exclude tests/ --exclude doc/ --gcov-options '\-lp'")
-
 exit(0)
