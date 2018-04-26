@@ -4,5 +4,4 @@ sudo: true
 before install:
   - sudo pip install cpp-coveralls
 script: sudo python build.py
-after_success:
   - coveralls --exclude tests/ --exclude doc/ --gcov-options '\-lp'
