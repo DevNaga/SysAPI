@@ -29,7 +29,7 @@ def clean():
             os.system(rmcmd)
         os.chdir("../")
 if len(sys.argv) != 2:
-    print "test_builder build / clean"
+    print sys.argv[0] + " build / clean"
     exit(0)
 
 print sys.argv[1]
