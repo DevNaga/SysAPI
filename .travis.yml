@@ -11,4 +11,5 @@ script:
   - sudo apt install libcuint1-dev
   - cd core && make && sudo cp libsysapi.so /usr/lib/ && sudo ldconfig
   - cd ../ && cd tests/ && make all && python test.py
+ after_succcess:
   - bash <(curl -s https://codecov.io/bash)
