@@ -4,7 +4,6 @@ sudo: true
 before install:
   - pip install --user cpp-coveralls
   - pip install --user pyyaml
-  - sudo apt install libcunit1-dev
 script: 
   - pip install --user cpp-coveralls
   - pip install --user pyyaml
