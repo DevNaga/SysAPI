@@ -1,9 +1,7 @@
 
-[![Build Status](https://travis-ci.org/DevNaga/libsysapi.svg?branch=master)](https://travis-ci.org/DevNaga/libsysapi/)
+[![Build Status](https://travis-ci.org/DevNaga/libsysapi.svg?branch=master)](https://travis-ci.org/DevNaga/libsysapi/) [![codecov](https://codecov.io/gh/DevNaga/libsysapi/branch/master/graph/badge.svg)](https://codecov.io/gh/DevNaga/libsysapi)
 
-[![Coverage Status](https://coveralls.io/repos/github/DevNaga/libsysapi/badge.svg?branch=master)](https://coveralls.io/github/DevNaga/libsysapi?branch=master)
 
-[![Test Coverage](https://api.codeclimate.com/v1/badges/72dbd4d950e8930ab233/test_coverage)](https://codeclimate.com/github/DevNaga/libsysapi/test_coverage)
 
 
 # libsysapi
