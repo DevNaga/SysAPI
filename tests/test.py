@@ -60,4 +60,4 @@ if failure == 0:
     fd.write("all success\n")
 
 fd.close()
-
+exit(0)
