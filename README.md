@@ -4,7 +4,7 @@
 
 
 
-# libsysapi
+# libsysapi (project moved to [edgemw](https://github.com/devnaga/edgemw/)
 
 System level APIs to make systems programming simpler.
 
